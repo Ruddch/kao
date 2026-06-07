@@ -25,6 +25,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          GITHUB_ACTIONS: 'true'
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -34,6 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: https://kaomoji.world
+      url: https://ruddch.github.io/kao/
     steps:
       - uses: actions/deploy-pages@v4

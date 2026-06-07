@@ -12,7 +12,10 @@ import {
 } from './pages/Docs/DocsPages';
 import { HomePage } from './pages/Home';
 
-export const router = createBrowserRouter([
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+export const router = createBrowserRouter(
+[
   {
     path: '/',
     element: <GlobalLayout />,
@@ -33,7 +36,9 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+],
+basename ? { basename } : undefined,
+);
 
 export function AppRouter() {
   return <RouterProvider router={router} />;
