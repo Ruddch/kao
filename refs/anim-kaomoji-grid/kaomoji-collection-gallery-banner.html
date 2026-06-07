@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1600">
+  <title>カオモジ Collection — Gallery Banner 1600×265</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Zen+Kaku+Gothic+New:wght@900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --pop-green:  oklch(68% 0.16 145);
+      --pop-pink:   oklch(72% 0.18 350);
+      --pop-orange: oklch(72% 0.2 55);
+      --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+      --font-mono:    'DotGothic16', ui-monospace, monospace;
+      --font-kao:     'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1600px;
+      height: 265px;
+      overflow: hidden;
+    }
+
+    .banner {
+      position: relative;
+      width: 1600px;
+      height: 265px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+      color: var(--fg);
+    }
+
+    .bg-pattern {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.05;
+      background-image:
+        repeating-linear-gradient(0deg, var(--fg) 0, var(--fg) 1px, transparent 1px, transparent 18px),
+        repeating-linear-gradient(90deg, var(--fg) 0, var(--fg) 1px, transparent 1px, transparent 18px);
+    }
+
+    /* === кампейн-полоски === */
+    .strip-left {
+      position: absolute; left: 0; top: 0;
+      width: 52px; height: 100%;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 16px 1fr 14px;
+      border-right: 3px solid var(--fg);
+    }
+    .strip-left .edge { background: var(--pop-cyan); border-right: 2px solid var(--fg); }
+    .strip-left .core { background: var(--pop-red); }
+    .strip-left .rail {
+      background: repeating-linear-gradient(180deg, var(--pop-blue) 0, var(--pop-blue) 8px, var(--fg) 8px, var(--fg) 9px);
+      border-left: 2px solid var(--fg);
+    }
+
+    .strip-right {
+      position: absolute; right: 0; top: 0;
+      width: 52px; height: 100%;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 14px 1fr 16px;
+      border-left: 3px solid var(--fg);
+    }
+    .strip-right .rail {
+      background: repeating-linear-gradient(180deg, var(--pop-blue) 0, var(--pop-blue) 8px, var(--fg) 8px, var(--fg) 9px);
+      border-right: 2px solid var(--fg);
+    }
+    .strip-right .core { background: var(--pop-red); }
+    .strip-right .edge { background: var(--pop-cyan); border-left: 2px solid var(--fg); }
+
+    .edge-top {
+      position: absolute; top: 0;
+      left: 52px; right: 52px;
+      height: 8px;
+      background: var(--pop-red);
+      border-bottom: 2px solid var(--fg);
+      z-index: 4;
+    }
+    .edge-bot {
+      position: absolute; bottom: 0;
+      left: 52px; right: 52px;
+      height: 8px;
+      background: var(--pop-red);
+      border-top: 2px solid var(--fg);
+      z-index: 4;
+    }
+
+    /* === главная область === */
+    .content {
+      position: absolute;
+      left: 52px; right: 52px;
+      top: 8px; bottom: 8px;
+      display: flex;
+      align-items: center;
+      z-index: 3;
+    }
+
+    /* === левый блок === */
+    .title-block {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 28px 0 20px;
+      gap: 4px;
+    }
+    .brand-jp {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--pop-red);
+      text-shadow: 2px 2px 0 var(--pop-yellow), 3px 3px 0 var(--fg);
+      line-height: 1;
+    }
+    .brand-en {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--fg);
+      opacity: 0.5;
+    }
+    .tag-line {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--fg);
+      line-height: 1.25;
+      border-left: 3px solid var(--pop-red);
+      padding-left: 8px;
+      margin-top: 2px;
+    }
+
+    /* === галерея === */
+    .gallery {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 0 24px;
+      /* НЕ overflow:hidden — иначе rotate обрезает края */
+    }
+
+    /* === базовый стикер === */
+    .sticker {
+      flex-shrink: 0;
+      border: 3px solid var(--fg);
+      box-shadow: 5px 5px 0 var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      background: var(--surface);
+    }
+
+    .sticker .kao {
+      font-family: var(--font-kao);
+      font-weight: 700;
+      font-size: 28px;
+      line-height: 1;
+      white-space: nowrap;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0;
+      color: var(--fg);
+    }
+
+    /* ===========================================
+       7 стикеров — разные размеры, цвета, углы
+       =========================================== */
+
+    /* 1. (＾▽＾) радость — зелёный */
+    .s1 {
+      width: 140px;
+      height: 110px;
+      background: var(--pop-green);
+      transform: rotate(-3deg);
+    }
+
+    /* 2. (╥﹏╥) грусть — розовый, маленький */
+    .s2 {
+      width: 120px;
+      height: 100px;
+      background: var(--pop-pink);
+      transform: rotate(2.5deg);
+    }
+
+    /* 3. (づ￣ ³￣)づ протягивание рук — оранжевый, КРУПНЫЙ */
+    .s3 {
+      width: 200px;
+      height: 115px;
+      background: var(--pop-orange);
+      transform: rotate(-1.5deg);
+      z-index: 2;
+    }
+    .s3 .kao { font-size: 26px; color: var(--surface); }
+
+    /* 4. (✿╹◡╹)ﾉ волна приветствия — голубой */
+    .s4 {
+      width: 155px;
+      height: 110px;
+      background: var(--pop-cyan);
+      transform: rotate(2deg);
+    }
+    .s4 .kao { font-size: 26px; }
+
+    /* 5. (♥ω♥) любовь — красный, МАЛЕНЬКИЙ */
+    .s5 {
+      width: 110px;
+      height: 100px;
+      background: var(--pop-red);
+      transform: rotate(-2.5deg);
+    }
+    .s5 .kao { color: var(--surface); }
+
+    /* 6. (⌐■_■) крутой — синий */
+    .s6 {
+      width: 130px;
+      height: 105px;
+      background: var(--pop-blue);
+      transform: rotate(1.5deg);
+    }
+    .s6 .kao { color: var(--surface); font-size: 26px; }
+
+    /* 7. ヽ(>∀<☆)ノ восторг — жёлтый тёмный */
+    .s7 {
+      width: 175px;
+      height: 110px;
+      background: color-mix(in oklch, var(--pop-yellow) 55%, var(--surface));
+      transform: rotate(3deg);
+    }
+    .s7 .kao { font-size: 24px; }
+  </style>
+</head>
+<body>
+  <article class="banner" role="img" aria-label="Kaomoji Collection Gallery Banner">
+    <div class="bg-pattern" aria-hidden="true"></div>
+
+    <aside class="strip-left" aria-hidden="true">
+      <div class="edge"></div>
+      <div class="core"></div>
+      <div class="rail"></div>
+    </aside>
+    <aside class="strip-right" aria-hidden="true">
+      <div class="rail"></div>
+      <div class="core"></div>
+      <div class="edge"></div>
+    </aside>
+    <div class="edge-top" aria-hidden="true"></div>
+    <div class="edge-bot" aria-hidden="true"></div>
+
+    <div class="content">
+      <div class="title-block">
+        <span class="brand-jp">カオモジ</span>
+        <span class="brand-en">KAOMOJI COLLECTION</span>
+        <span class="tag-line">顔文字の感情を、一枚一枚。</span>
+      </div>
+
+      <div class="gallery">
+        <div class="sticker s1"><span class="kao">(＾▽＾)</span></div>
+        <div class="sticker s2"><span class="kao">(╥﹏╥)</span></div>
+        <div class="sticker s3"><span class="kao">(づ￣ ³￣)づ</span></div>
+        <div class="sticker s4"><span class="kao">(✿╹◡╹)ﾉ</span></div>
+        <div class="sticker s5"><span class="kao">(♥ω♥)</span></div>
+        <div class="sticker s6"><span class="kao">(⌐■_■)</span></div>
+        <div class="sticker s7"><span class="kao">ヽ(>∀<☆)ノ</span></div>
+      </div>
+    </div>
+  </article>
+</body>
+</html>

@@ -1,0 +1,137 @@
+.header {
+  border-bottom: 3px solid var(--fg);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  padding:
+    var(--gap-sm)
+    var(--frame-inset-right)
+    var(--gap-sm)
+    var(--frame-inset-left);
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gap-xs);
+  margin-right: auto;
+}
+
+.logoJa {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  color: var(--pop-red);
+  text-shadow: 2px 2px 0 var(--pop-yellow), 4px 4px 0 var(--fg);
+  line-height: 1;
+}
+
+.logoEn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.menuCluster {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.divider {
+  width: 2px;
+  height: 28px;
+  background: var(--fg);
+  opacity: 0.2;
+  flex-shrink: 0;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wallet {
+  display: flex;
+  align-items: center;
+  margin-left: var(--gap-xs);
+}
+
+.menuBtn {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  border: var(--border-thin);
+  background: var(--pop-cyan);
+}
+
+.menuBtn span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--fg);
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .inner {
+    padding-inline: var(--content-pad-left) var(--content-pad-right);
+  }
+}
+
+@media (max-width: 767px) {
+  .menuCluster,
+  .wallet {
+    display: none;
+  }
+
+  .menuBtn {
+    display: flex;
+  }
+
+  .mobileMenu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--gap-md);
+    border-top: var(--border-thin);
+    background: var(--surface);
+  }
+
+  .mobileNav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mobileDivider {
+    height: 2px;
+    background: var(--fg);
+    opacity: 0.15;
+  }
+
+  .mobileSocial {
+    display: flex;
+    gap: 8px;
+  }
+}

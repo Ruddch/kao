@@ -1,0 +1,25 @@
+.wrap {
+  border: var(--border-thick);
+  background: var(--surface);
+  padding: var(--gap-md);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: var(--gap-sm);
+  text-align: center;
+  background: var(--pop-green);
+  border: var(--border-thin);
+  padding: 2px 8px;
+  display: inline-block;
+  width: 100%;
+}

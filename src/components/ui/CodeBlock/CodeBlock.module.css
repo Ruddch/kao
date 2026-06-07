@@ -1,0 +1,15 @@
+.pre {
+  background: var(--fg);
+  color: var(--surface);
+  padding: var(--gap-md);
+  overflow-x: auto;
+  margin: var(--gap-md) 0;
+  border: var(--border-thin);
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

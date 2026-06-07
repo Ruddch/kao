@@ -1,0 +1,36 @@
+.cell {
+  border: 1px solid var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 2px;
+  min-height: 46px;
+  cursor: pointer;
+  transition: background var(--duration-fast), outline var(--duration-fast);
+}
+
+.kao {
+  font-size: 11px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bgWhite { background: var(--surface); }
+.bgCyan { background: var(--pop-cyan); }
+.bgRed { background: var(--pop-red); color: var(--surface); }
+.bgPink { background: var(--pop-pink); }
+.bgGreen { background: var(--pop-green); }
+.bgBlue { background: var(--pop-blue); color: var(--surface); }
+.bgYellow { background: var(--pop-yellow); }
+
+.selected {
+  outline: 3px solid var(--pop-red);
+  outline-offset: -1px;
+  z-index: 1;
+}
+
+.cell:hover {
+  filter: brightness(1.05);
+}

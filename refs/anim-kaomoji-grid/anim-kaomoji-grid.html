@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080">
+  <title>カオモジ — Grid Zoom Animation 1080×1080</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&family=Noto+Sans+Symbols+2&display=block" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --pop-green:  oklch(68% 0.16 145);
+      --pop-pink:   oklch(72% 0.18 350);
+      --pop-orange: oklch(72% 0.2 55);
+      --font-kao:   'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+      --cols: 20;
+      --rows: 20;
+      --gap: 5px;
+      --cell: 46px;
+      --cell-border: 1px;
+      --cell-pad: 2px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+    }
+
+    .stage {
+      position: relative;
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+    }
+
+    .camera {
+      position: absolute;
+      inset: 0;
+      overflow: visible;
+    }
+
+    .grid {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), var(--cell));
+      grid-template-rows: repeat(var(--rows), var(--cell));
+      gap: var(--gap);
+      transform-origin: 0 0;
+    }
+
+    .cell {
+      width: var(--cell);
+      height: var(--cell);
+      border: var(--cell-border) solid var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: var(--cell-pad);
+      font-family: var(--font-kao);
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 1;
+      white-space: nowrap;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: auto;
+      color: var(--fg);
+      background: var(--surface);
+    }
+
+    .cell.is-center {
+      z-index: 2;
+      isolation: isolate;
+    }
+
+    .cell-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .kao-layer {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      transform: translateY(0);
+    }
+
+    .kao-text {
+      display: block;
+      line-height: 1;
+      white-space: nowrap;
+      text-align: center;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="camera" id="camera">
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <script src="kaomoji-pool.js"></script>
+  <script>
+    const COLS = 20;
+    const ROWS = 20;
+    const CENTER = { col: 10, row: 10 };
+    const GRID_SIZE = COLS * ROWS;
+    const KAOMOJI_POOL = window.KAOMOJI_POOL ?? [];
+
+    const TIMING = {
+      slotStartMs: 480,
+      slotEndMs: 165,
+      slotDurationMs: 6200,
+      zoomDurationMs: 2800,
+      holdMs: 1200,
+    };
+
+    const CSS = getComputedStyle(document.documentElement);
+    const CELL = parseFloat(CSS.getPropertyValue('--cell'));
+    const GAP = parseFloat(CSS.getPropertyValue('--gap'));
+    const GRID_W = COLS * CELL + (COLS - 1) * GAP;
+    const GRID_H = ROWS * CELL + (ROWS - 1) * GAP;
+    const BASE_FONT = 11;
+    const HERO_SCALE = 12;
+
+    const gridEl = document.getElementById('grid');
+    const IS_EXPORT = new URLSearchParams(location.search).get('export') === '1';
+
+    let cells = [];
+    let centerCell = null;
+    let animId = null;
+    let startTime = 0;
+    let exportSwapSequence = [];
+    window.exportReady = false;
+
+    function shuffle(arr) {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function pickNot(arr, avoid) {
+      let v = pick(arr);
+      while (v === avoid && arr.length > 1) v = pick(arr);
+      return v;
+    }
+
+    function createKaoLayer(kao) {
+      const layer = document.createElement('div');
+      layer.className = 'kao-layer';
+      const text = document.createElement('span');
+      text.className = 'kao-text';
+      text.textContent = kao;
+      layer.appendChild(text);
+      return layer;
+    }
+
+    function fitKaomoji(layer, cellEl) {
+      const text = layer.querySelector('.kao-text');
+      const box = cellEl.querySelector('.cell-inner');
+      if (!text || !box) return;
+
+      text.style.transform = 'none';
+      text.style.fontSize = `${BASE_FONT}px`;
+
+      const maxW = box.clientWidth;
+      const maxH = box.clientHeight;
+      if (maxW < 1 || maxH < 1) return;
+
+      if (text.scrollWidth <= maxW && text.scrollHeight <= maxH) {
+        centerKaomojiOptically(text, box);
+        return;
+      }
+
+      let lo = 7;
+      let hi = BASE_FONT;
+      while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2);
+        text.style.fontSize = `${mid}px`;
+        if (text.scrollWidth <= maxW && text.scrollHeight <= maxH) lo = mid;
+        else hi = mid - 1;
+      }
+
+      text.style.fontSize = `${lo}px`;
+      centerKaomojiOptically(text, box);
+    }
+
+    function centerKaomojiOptically(text, box) {
+      text.style.transform = 'none';
+      void text.offsetHeight;
+
+      const layer = text.parentElement;
+      if (!layer) return;
+
+      const layerScale = layer.clientWidth > 0
+        ? layer.getBoundingClientRect().width / layer.clientWidth
+        : 1;
+
+      const tr = text.getBoundingClientRect();
+      const lr = layer.getBoundingClientRect();
+      let dx = (lr.left + lr.width / 2 - tr.left - tr.width / 2) / layerScale;
+      let dy = (lr.top + lr.height / 2 - tr.top - tr.height / 2) / layerScale;
+
+      dx = Math.max(-4, Math.min(4, dx));
+      dy = Math.max(-4, Math.min(4, dy));
+
+      if (Math.abs(dx) > 0.25 || Math.abs(dy) > 0.25) {
+        text.style.transform = `translate(${dx}px, ${dy}px)`;
+      }
+    }
+
+    function fitCellKaomoji(cellEl) {
+      cellEl.querySelectorAll('.kao-layer').forEach((layer) => fitKaomoji(layer, cellEl));
+    }
+
+    function fitAllCells() {
+      cells.forEach(({ el }) => fitCellKaomoji(el));
+    }
+
+    function cellCenterPx(col, row) {
+      const x = col * (CELL + GAP) + CELL / 2;
+      const y = row * (CELL + GAP) + CELL / 2;
+      return { x, y };
+    }
+
+    function buildGrid() {
+      gridEl.innerHTML = '';
+      cells = [];
+
+      const gridKao = shuffle(KAOMOJI_POOL).slice(0, GRID_SIZE);
+      let kaoIndex = 0;
+
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          const el = document.createElement('div');
+          el.className = 'cell';
+          el.dataset.col = col;
+          el.dataset.row = row;
+
+          const inner = document.createElement('div');
+          inner.className = 'cell-inner';
+          const kao = gridKao[kaoIndex];
+          kaoIndex += 1;
+          const layer = createKaoLayer(kao);
+          inner.appendChild(layer);
+          el.appendChild(inner);
+
+          if (col === CENTER.col && row === CENTER.row) {
+            el.classList.add('is-center');
+            centerCell = { el, inner, layer, kao };
+          }
+
+          gridEl.appendChild(el);
+          cells.push({ el, inner, layer, col, row });
+        }
+      }
+    }
+
+    function buildSwapSequence(untilMs) {
+      const swaps = [];
+      let t = 0;
+      let kao = centerCell.kao;
+      swaps.push({ time: 0, kao, interval: TIMING.slotStartMs });
+
+      while (t < untilMs) {
+        const interval = slotInterval(t);
+        const nextT = t + interval;
+        if (nextT >= untilMs) break;
+        kao = pickNot(KAOMOJI_POOL, kao);
+        swaps.push({ time: nextT, kao, interval: slotInterval(nextT) });
+        t = nextT;
+      }
+      return swaps;
+    }
+
+    function swapStateAt(elapsed) {
+      let idx = 0;
+      for (let i = 0; i < exportSwapSequence.length; i += 1) {
+        if (exportSwapSequence[i].time <= elapsed) idx = i;
+      }
+      const cur = exportSwapSequence[idx];
+      const next = exportSwapSequence[idx + 1];
+      const since = elapsed - cur.time;
+      const dur = slideDurationMs(cur.interval);
+      const progress = next ? Math.min(1, since / dur) : 1;
+      return { from: cur.kao, to: next ? next.kao : cur.kao, progress };
+    }
+
+    function renderCenterSlideState(state) {
+      const { from, to, progress } = state;
+      const { inner, el } = centerCell;
+      inner.innerHTML = '';
+
+      if (progress >= 1 || from === to) {
+        const layer = createKaoLayer(to || from);
+        inner.appendChild(layer);
+        fitKaomoji(layer, el);
+        centerCell.layer = layer;
+        centerCell.kao = to || from;
+        return;
+      }
+
+      const oldLayer = createKaoLayer(from);
+      const newLayer = createKaoLayer(to);
+      oldLayer.style.transition = 'none';
+      newLayer.style.transition = 'none';
+      oldLayer.style.transform = `translateY(${-110 * progress}%)`;
+      newLayer.style.transform = `translateY(${110 * (1 - progress)}%)`;
+      inner.appendChild(oldLayer);
+      inner.appendChild(newLayer);
+      fitKaomoji(oldLayer, el);
+      fitKaomoji(newLayer, el);
+      centerCell.layer = newLayer;
+      centerCell.kao = to;
+    }
+
+    function renderAt(elapsedMs) {
+      if (!centerCell || !exportSwapSequence.length) return;
+
+      if (centerCell.slideTimer) {
+        clearTimeout(centerCell.slideTimer);
+        centerCell.slideTimer = null;
+      }
+
+      const slotEnd = TIMING.slotDurationMs;
+      const zoomEnd = slotEnd + TIMING.zoomDurationMs;
+      const origin = cellCenterPx(CENTER.col, CENTER.row);
+      const lastSwap = exportSwapSequence[exportSwapSequence.length - 1];
+
+      if (elapsedMs < slotEnd) {
+        applyCamera(HERO_SCALE, origin.x, origin.y);
+        renderCenterSlideState(swapStateAt(elapsedMs));
+        return;
+      }
+
+      if (!runFrame.gridFitted) {
+        runFrame.gridFitted = true;
+        fitAllCells();
+      }
+
+      if (elapsedMs < zoomEnd) {
+        const t = easeInOutCubic((elapsedMs - slotEnd) / TIMING.zoomDurationMs);
+        const scale = HERO_SCALE + (fitScale() - HERO_SCALE) * t;
+        const focusX = origin.x + (GRID_W / 2 - origin.x) * t;
+        const focusY = origin.y + (GRID_H / 2 - origin.y) * t;
+        applyCamera(scale, focusX, focusY);
+        renderCenterSlideState({ from: lastSwap.kao, to: lastSwap.kao, progress: 1 });
+        return;
+      }
+
+      applyCamera(fitScale(), GRID_W / 2, GRID_H / 2);
+      if (!runFrame.finalFitted) {
+        runFrame.finalFitted = true;
+        fitAllCells();
+      }
+      renderCenterSlideState({ from: lastSwap.kao, to: lastSwap.kao, progress: 1 });
+    }
+
+    function slideDurationMs(intervalMs) {
+      return Math.min(280, Math.max(72, intervalMs * 0.68));
+    }
+
+    const SLIDE_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+    function setCenterContent(kao, intervalMs) {
+      if (!centerCell || centerCell.kao === kao) return;
+
+      const { el, inner, layer } = centerCell;
+      const duration = slideDurationMs(intervalMs);
+
+      if (centerCell.slideTimer) {
+        clearTimeout(centerCell.slideTimer);
+        centerCell.slideTimer = null;
+      }
+
+      inner.querySelectorAll('.kao-layer').forEach((node) => {
+        if (node !== layer) node.remove();
+      });
+
+      const oldLayer = layer;
+      oldLayer.style.transition = 'none';
+      oldLayer.style.transform = 'translateY(0)';
+
+      const newLayer = createKaoLayer(kao);
+      newLayer.style.transition = 'none';
+      newLayer.style.transform = 'translateY(110%)';
+      inner.appendChild(newLayer);
+      fitKaomoji(newLayer, el);
+
+      void inner.offsetHeight;
+
+      requestAnimationFrame(() => {
+        oldLayer.style.transition = `transform ${duration}ms ${SLIDE_EASING}`;
+        oldLayer.style.transform = 'translateY(-110%)';
+        newLayer.style.transition = `transform ${duration}ms ${SLIDE_EASING}`;
+        newLayer.style.transform = 'translateY(0)';
+      });
+
+      centerCell.slideTimer = setTimeout(() => {
+        oldLayer.remove();
+        newLayer.style.transition = 'none';
+        centerCell.slideTimer = null;
+      }, duration + 24);
+
+      centerCell.layer = newLayer;
+      centerCell.kao = kao;
+    }
+
+    function slotInterval(elapsed) {
+      const t = Math.min(1, elapsed / TIMING.slotDurationMs);
+      const eased = t * t * (3 - 2 * t);
+      return TIMING.slotStartMs + (TIMING.slotEndMs - TIMING.slotStartMs) * eased;
+    }
+
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function applyCamera(scale, focusX, focusY) {
+      const cx = 540;
+      const cy = 540;
+      const snappedScale = Math.round(scale * 1000) / 1000;
+      const tx = Math.round(cx - focusX * snappedScale);
+      const ty = Math.round(cy - focusY * snappedScale);
+      gridEl.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${snappedScale})`;
+    }
+
+    function fitScale() {
+      const pad = 28;
+      const raw = Math.min((1080 - pad * 2) / GRID_W, (1080 - pad * 2) / GRID_H);
+      return Math.round(raw * 1000) / 1000;
+    }
+
+    function runFrame(now) {
+      if (!startTime) startTime = now;
+      const elapsed = now - startTime;
+
+      const slotEnd = TIMING.slotDurationMs;
+      const zoomEnd = slotEnd + TIMING.zoomDurationMs;
+      const totalEnd = zoomEnd + TIMING.holdMs;
+
+      const origin = cellCenterPx(CENTER.col, CENTER.row);
+
+      if (elapsed < slotEnd) {
+        applyCamera(HERO_SCALE, origin.x, origin.y);
+
+        const interval = slotInterval(elapsed);
+        if (!runFrame.lastSwap || now - runFrame.lastSwap >= interval) {
+          runFrame.lastSwap = now;
+          runFrame.lastInterval = interval;
+          const kao = pickNot(KAOMOJI_POOL, centerCell?.kao);
+          setCenterContent(kao, interval);
+        }
+      } else if (elapsed < zoomEnd) {
+        if (!runFrame.gridFitted) {
+          runFrame.gridFitted = true;
+          fitAllCells();
+        }
+        const t = easeInOutCubic((elapsed - slotEnd) / TIMING.zoomDurationMs);
+        const scale = HERO_SCALE + (fitScale() - HERO_SCALE) * t;
+        const focusX = origin.x + (GRID_W / 2 - origin.x) * t;
+        const focusY = origin.y + (GRID_H / 2 - origin.y) * t;
+
+        applyCamera(scale, focusX, focusY);
+      } else {
+        if (!runFrame.gridFitted) {
+          runFrame.gridFitted = true;
+          fitAllCells();
+        }
+        applyCamera(fitScale(), GRID_W / 2, GRID_H / 2);
+        if (!runFrame.finalFitted) {
+          runFrame.finalFitted = true;
+          fitAllCells();
+        }
+
+        if (elapsed >= totalEnd) {
+          runFrame.lastSwap = 0;
+          return;
+        }
+      }
+
+      animId = requestAnimationFrame(runFrame);
+    }
+
+    async function start() {
+      if (KAOMOJI_POOL.length < GRID_SIZE) {
+        throw new Error(`Need at least ${GRID_SIZE} unique kaomoji in KAOMOJI_POOL`);
+      }
+
+      if (animId) cancelAnimationFrame(animId);
+      startTime = 0;
+      runFrame.lastSwap = 0;
+      runFrame.lastInterval = TIMING.slotStartMs;
+      runFrame.gridFitted = false;
+      runFrame.finalFitted = false;
+      if (centerCell?.slideTimer) {
+        clearTimeout(centerCell.slideTimer);
+      }
+      buildGrid();
+
+      await Promise.all([
+        document.fonts.load('700 11px "Noto Sans JP"'),
+        document.fonts.load('700 11px "Noto Sans Symbols 2"'),
+      ]);
+
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(resolve));
+      });
+
+      fitAllCells();
+
+      if (IS_EXPORT) {
+        exportSwapSequence = buildSwapSequence(TIMING.slotDurationMs);
+        window.exportReady = true;
+        renderAt(0);
+        return;
+      }
+
+      animId = requestAnimationFrame(runFrame);
+    }
+
+    window.renderAt = renderAt;
+
+    document.fonts.ready.then(() => {
+      if (new URLSearchParams(location.search).get('export') !== '1') {
+        start();
+      }
+    });
+    window.startAnimation = start;
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        start();
+      }
+    });
+    document.getElementById('stage').addEventListener('click', start);
+  </script>
+</body>
+</html>

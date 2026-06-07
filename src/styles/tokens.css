@@ -1,0 +1,55 @@
+:root {
+  --bg: oklch(99% 0.01 95);
+  --surface: oklch(100% 0 0);
+  --fg: oklch(18% 0.02 260);
+  --muted: oklch(42% 0.03 260);
+  --border: oklch(75% 0.04 260);
+
+  --pop-red: oklch(58% 0.26 25);
+  --pop-yellow: oklch(88% 0.18 95);
+  --pop-cyan: oklch(78% 0.14 210);
+  --pop-blue: oklch(55% 0.2 250);
+  --pop-green: oklch(68% 0.16 145);
+  --pop-pink: oklch(72% 0.18 350);
+  --pop-orange: oklch(72% 0.2 55);
+
+  --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+  --font-body: 'Noto Sans JP', 'Inter', 'Hiragino Sans', sans-serif;
+  --font-mono: 'DotGothic16', ui-monospace, monospace;
+  --font-kao: 'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+
+  --gap-tight: 4px;
+  --gap-xs: 6px;
+  --gap-sm: 10px;
+  --gap-md: 14px;
+  --gap-lg: 24px;
+  --gap-xl: 48px;
+
+  --shadow-hard-sm: 3px 3px 0 var(--fg);
+  --shadow-hard-md: 6px 6px 0 var(--fg);
+  --shadow-hard-lg: 8px 8px 0 var(--fg);
+
+  --border-thin: 2px solid var(--fg);
+  --border-thick: 4px solid var(--fg);
+
+  --duration-fast: 120ms;
+  --duration-normal: 280ms;
+  --ease-snap: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --editor-sidebar: 280px;
+
+  /* Side frame — kaomoji-x-banner-2.html */
+  --strip-w: 82px;
+  --strip-edge: 28px;
+  --strip-rail: 22px;
+  --rail-right-w: 44px;
+  --strip-height: 40px;
+  --content-pad-top: 28px;
+  --content-pad-bottom: 28px;
+  --content-pad-left: 16px;
+  --content-pad-right: 36px;
+  --frame-inset-left: calc(var(--strip-w) + var(--content-pad-left));
+  --frame-inset-right: calc(var(--rail-right-w) + var(--content-pad-right));
+}

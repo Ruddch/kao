@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080">
+  <title>カオモジ — Kaomoji Pet 1080×1080</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Noto+Sans+Mono+CJK+JP:wght@700&family=Noto+Sans+Symbols+2&display=block">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Noto+Sans+Mono+CJK+JP:wght@700&family=Noto+Sans+Symbols+2&display=block" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --pop-green:  oklch(68% 0.16 145);
+      --pop-pink:   oklch(72% 0.18 350);
+      --pop-orange: oklch(72% 0.2 55);
+      --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+      --font-body:    'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+      --font-kao:     'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+      --font-mono:    'DotGothic16', ui-monospace, monospace;
+      --gap: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1080px; height: 1080px; overflow: hidden; }
+
+    .post {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+      color: var(--fg);
+      font-family: var(--font-body);
+
+      display: grid;
+      gap: var(--gap);
+      grid-template-rows: 44px 80px 1fr 80px 44px;
+      grid-template-columns: 10px repeat(5, 1fr) 10px;
+      grid-template-areas:
+        "strip strip strip strip strip strip strip"
+        ".     k1    k2    k3    k4    k5    .    "
+        ".     hero  hero  hero  hero  hero  .    "
+        ".     k12   k13   k14   k15   k16   .    "
+        "bot   bot   bot   bot   bot   bot   bot  ";
+    }
+
+    .strip-top { grid-area: strip; background: var(--fg); }
+    .strip-bot { grid-area: bot; background: var(--fg); }
+    .strip-top, .strip-bot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .strip-top span, .strip-bot span {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--pop-yellow);
+      white-space: nowrap;
+      letter-spacing: 0.08em;
+    }
+
+    .k {
+      font-family: var(--font-kao);
+      font-weight: 700;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0, "palt" 0;
+      letter-spacing: 0;
+      line-height: 1;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+      font-synthesis: none;
+      border: 3px solid var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      white-space: nowrap;
+      box-shadow: 4px 4px 0 var(--fg);
+      z-index: 2;
+    }
+    .bg-w { background: var(--surface); }
+    .bg-c { background: var(--pop-cyan); }
+    .bg-r { background: var(--pop-red); color: var(--surface); }
+    .bg-p { background: var(--pop-pink); }
+    .bg-g { background: var(--pop-green); }
+    .bg-b { background: var(--pop-blue); color: var(--surface); }
+    .bg-o { background: var(--pop-orange); }
+
+    .k1  { grid-area: k1;  }
+    .k2  { grid-area: k2;  }
+    .k3  { grid-area: k3;  }
+    .k4  { grid-area: k4;  }
+    .k5  { grid-area: k5;  }
+    .k12 { grid-area: k12; }
+    .k13 { grid-area: k13; }
+    .k14 { grid-area: k14; }
+    .k15 { grid-area: k15; }
+    .k16 { grid-area: k16; }
+
+    .hero-area {
+      grid-area: hero;
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 8px 0;
+    }
+
+    .title-block {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .title-jp {
+      font-family: var(--font-display);
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--pop-red);
+      text-shadow: 3px 3px 0 var(--pop-yellow), 6px 6px 0 var(--fg);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .title-en {
+      font-family: var(--font-display);
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+
+    .pet-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+    }
+
+    .tamagotchi-ascii {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0;
+      margin: 0;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .tamagotchi-ascii code {
+      display: block;
+    }
+
+    .ascii-row {
+      display: block;
+      white-space: pre;
+    }
+
+    .ascii-row--top {
+      background: var(--pop-yellow);
+      color: var(--fg);
+    }
+
+    .ascii-row--lcd {
+      background: var(--surface);
+      color: var(--fg);
+    }
+
+    .ascii-row--bot {
+      background: var(--pop-red);
+      color: var(--surface);
+    }
+
+    .kao-pad {
+      font-family: var(--font-kao);
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0, "palt" 0;
+    }
+  </style>
+</head>
+<body>
+  <article class="post">
+    <div class="strip-top">
+      <span>☆ カオモジ Pet ☆ Kaomoji Pet ☆ カオモジ Pet ☆ Kaomoji Pet ☆ カオモジ Pet ☆ Kaomoji Pet ☆</span>
+    </div>
+
+    <div class="k k1  bg-w">(｀・ω・´)</div>
+    <div class="k k2  bg-c">(◕ω◕)</div>
+    <div class="k k3  bg-r">(♥ω♥*)</div>
+    <div class="k k4  bg-p">(≧∇≦)</div>
+    <div class="k k5  bg-g">٩(◕‿◕)۶</div>
+
+    <div class="hero-area">
+      <div class="title-block">
+        <h1 class="title-jp">カオモジ Pet</h1>
+        <p class="title-en">Kaomoji Pet</p>
+      </div>
+
+      <div class="pet-stage">
+        <pre class="tamagotchi-ascii" aria-hidden="true"><code><span class="ascii-row ascii-row--top">          __O__</span><span class="ascii-row ascii-row--top">        .'     '.</span><span class="ascii-row ascii-row--top">      .'         '.</span><span class="ascii-row ascii-row--top">     .  _________  .</span><span class="ascii-row ascii-row--lcd">     : |         | :</span><span class="ascii-row ascii-row--lcd">    :  |  <span class="kao-pad">(◕ω◕)</span>  |  :</span><span class="ascii-row ascii-row--lcd">    :  |         |  :</span><span class="ascii-row ascii-row--lcd">    :  |_________|  :</span><span class="ascii-row ascii-row--bot">     |             |</span><span class="ascii-row ascii-row--bot">     '   O     O   '</span><span class="ascii-row ascii-row--bot">      ',    O    ,'</span><span class="ascii-row ascii-row--bot">        '.......'</span></code></pre>
+      </div>
+    </div>
+
+    <div class="k k12 bg-p">(T_T)</div>
+    <div class="k k13 bg-w">(ﾉ≧∀≦)ﾉ</div>
+    <div class="k k14 bg-b">(・∀・)</div>
+    <div class="k k15 bg-o">＼(＾▽＾)／</div>
+    <div class="k k16 bg-c">( ͡° ͜ʖ ͡°)</div>
+
+    <div class="strip-bot">
+      <span>☆ カオモジ Pet ☆ Kaomoji Pet ☆ @kaomojinft ☆ kaomoji.world ☆</span>
+    </div>
+  </article>
+</body>
+</html>

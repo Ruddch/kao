@@ -1,0 +1,42 @@
+.root {
+  margin-bottom: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.templateBtn {
+  border: var(--border-thin);
+  padding: 8px;
+  background: var(--surface);
+  text-align: center;
+  cursor: pointer;
+}
+
+.templateBtn:hover {
+  background: color-mix(in oklch, var(--pop-yellow) 30%, var(--surface));
+}
+
+.templateSelected {
+  background: var(--pop-yellow);
+  outline: 3px solid var(--pop-red);
+  outline-offset: -1px;
+}
+
+.templateKao {
+  font-size: 16px;
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .templateKao {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1080">
+  <title>カオモジ — Square Post 1080×1080</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Noto+Sans+Mono+CJK+JP:wght@700&family=Noto+Sans+Symbols+2&display=block">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Noto+Sans+Mono+CJK+JP:wght@700&family=Noto+Sans+Symbols+2&display=block" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --pop-green:  oklch(68% 0.16 145);
+      --pop-pink:   oklch(72% 0.18 350);
+      --pop-orange: oklch(72% 0.2 55);
+      --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+      --font-body:    'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+      --font-kao:     'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+      --font-mono:    'DotGothic16', ui-monospace, monospace;
+      --gap: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1080px; height: 1080px; overflow: hidden; }
+
+    .post {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+      color: var(--fg);
+      font-family: var(--font-body);
+
+      display: grid;
+      gap: var(--gap);
+      grid-template-rows: 44px 80px 1fr 80px 44px;
+      grid-template-columns: 10px repeat(5, 1fr) 10px;
+      grid-template-areas:
+        "strip strip strip strip strip strip strip"
+        ".     k1    k2    k3    k4    k5    .    "
+        ".     hero  hero  hero  hero  hero  .    "
+        ".     k12   k13   k14   k15   k16   .    "
+        "bot   bot   bot   bot   bot   bot   bot  ";
+    }
+
+    /* ── strips ── */
+    .strip-top { grid-area: strip; background: var(--fg); }
+    .strip-bot { grid-area: bot; background: var(--fg); }
+    .strip-top, .strip-bot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .strip-top span, .strip-bot span {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--pop-yellow);
+      white-space: nowrap;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── kaomoji cells — stable metrics for export ── */
+    .k {
+      font-family: var(--font-kao);
+      font-weight: 700;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0, "palt" 0;
+      letter-spacing: 0;
+      line-height: 1;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+      font-synthesis: none;
+    }
+
+    .k {
+      border: 3px solid var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      white-space: nowrap;
+      box-shadow: 4px 4px 0 var(--fg);
+      z-index: 2;
+    }
+    .bg-w { background: var(--surface); }
+    .bg-c { background: var(--pop-cyan); }
+    .bg-r { background: var(--pop-red); color: var(--surface); }
+    .bg-p { background: var(--pop-pink); }
+    .bg-g { background: var(--pop-green); }
+    .bg-b { background: var(--pop-blue); color: var(--surface); }
+    .bg-o { background: var(--pop-orange); }
+
+    .k1  { grid-area: k1;  }
+    .k2  { grid-area: k2;  }
+    .k3  { grid-area: k3;  }
+    .k4  { grid-area: k4;  }
+    .k5  { grid-area: k5;  }
+    .k12 { grid-area: k12; }
+    .k13 { grid-area: k13; }
+    .k14 { grid-area: k14; }
+    .k15 { grid-area: k15; }
+    .k16 { grid-area: k16; }
+
+    /* ── hero center area ── */
+    .hero-area {
+      grid-area: hero;
+      position: relative;
+      z-index: 3;
+    }
+
+    .text-block {
+      top: 150px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(50% + 100px + 20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .greeting {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--fg);
+      letter-spacing: 0.04em;
+    }
+    .brand-huge {
+      font-family: var(--font-display);
+      font-size: 130px;
+      font-weight: 900;
+      color: var(--pop-red);
+      text-shadow: 3px 3px 0 var(--pop-yellow), 7px 7px 0 var(--fg);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-kao-card {
+      position: absolute;
+      top: 59%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-2deg);
+      background: var(--surface);
+      border: 6px solid var(--fg);
+      box-shadow: 8px 8px 0 var(--fg);
+      padding: 24px 52px;
+    }
+    /* hero: baked PNG from hero-kaomoji.svg — original (๑•̀ㅂ•́)و✧, no font drift */
+    .hero-kao-img {
+      display: block;
+      height: 118px;
+      width: auto;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <article class="post">
+    <div class="strip-top"><span>☆ KAOMOJI ☆ カオモジ ☆ KAOMOJI ☆ カオモジ ☆ KAOMOJI ☆ カオモジ ☆ KAOMOJI ☆ カオモジ ☆</span></div>
+
+    <div class="k k1  bg-w">( ͡° ͜ʖ ͡°)</div>
+    <div class="k k2  bg-c">ヽ(´▽`)/</div>
+    <div class="k k3  bg-r">(♥ω♥*)</div>
+    <div class="k k4  bg-p">(≧∇≦)</div>
+    <div class="k k5  bg-w">(ﾉ◕ヮ◕)ﾉ</div>
+
+    <div class="hero-area">
+      <div class="text-block">
+        <p class="greeting">やあ！ 私たちは</p>
+        <h1 class="brand-huge">カオモジ</h1>
+      </div>
+      <div class="hero-kao-card">
+        <img
+          class="hero-kao-img"
+          src="hero-kao.png"
+          width="920"
+          height="118"
+          alt="(๑•̀ㅂ•́)و✧"
+        >
+      </div>
+    </div>
+
+    <div class="k k12 bg-p">(T_T)</div>
+    <div class="k k13 bg-w">(`皿´)</div>
+    <div class="k k14 bg-b">٩(◕‿◕)۶</div>
+    <div class="k k15 bg-g">(・∀・)</div>
+    <div class="k k16 bg-o">＼(＾▽＾)／</div>
+
+    <div class="strip-bot"><span>☆ KAOMOJI ☆ カオモジ ☆ KAOMOJI ☆ カオモジ ☆ KAOMOJI ☆ カオモジ ☆ KAOMOJI ☆ カオモジ ☆</span></div>
+  </article>
+</body>
+</html>

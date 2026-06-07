@@ -1,0 +1,19 @@
+.bgYellow { background: var(--pop-yellow); }
+.bgCyan { background: var(--pop-cyan); }
+.bgPink { background: var(--pop-pink); }
+.bgGreen { background: var(--pop-green); }
+.bgWhite { background: var(--surface); }
+.bgMint { background: color-mix(in oklch, var(--pop-cyan) 42%, var(--surface)); }
+.bgRed { background: var(--pop-red); }
+.bgBlue { background: var(--pop-blue); }
+.bgOrange { background: var(--pop-orange); }
+
+.plateYellow { background: var(--pop-yellow); }
+.plateCyan { background: var(--pop-cyan); }
+.platePink { background: var(--pop-pink); }
+.plateGreen { background: var(--pop-green); }
+.plateWhite { background: var(--surface); }
+.plateMint { background: var(--pop-pink); }
+.plateRed { background: var(--pop-red); }
+.plateBlue { background: var(--pop-blue); }
+.plateOrange { background: var(--pop-orange); }

@@ -1,0 +1,1 @@
+export { BgColorPicker } from './BgColorPicker';

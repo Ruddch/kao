@@ -1,0 +1,26 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: var(--border-thin);
+  background: color-mix(in oklch, var(--surface) 90%, var(--bg));
+  color: var(--muted);
+  transition:
+    background var(--duration-fast),
+    color var(--duration-fast),
+    transform var(--duration-fast);
+}
+
+.link:hover {
+  background: var(--surface);
+  color: var(--fg);
+  transform: translateY(-1px);
+}
+
+.svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}

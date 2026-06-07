@@ -1,0 +1,41 @@
+.card {
+  border: var(--border-thick);
+  background: var(--surface);
+  padding: var(--gap-md);
+}
+
+.default {
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.sticker {
+  box-shadow: var(--shadow-hard-md);
+  transform: rotate(-2deg);
+}
+
+.nftCell {
+  border-width: 2px;
+  padding: var(--gap-sm);
+  min-height: 80px;
+  cursor: pointer;
+  transition: background var(--duration-fast), outline var(--duration-fast);
+}
+
+.nftCell:hover {
+  background: color-mix(in oklch, var(--pop-yellow) 40%, var(--surface));
+}
+
+.feat {
+  border-width: 3px;
+  padding: var(--gap-lg);
+}
+
+.hot {
+  background: color-mix(in oklch, var(--pop-pink) 25%, var(--surface));
+}
+
+.selected {
+  outline: 3px solid var(--pop-red);
+  outline-offset: -1px;
+  background: color-mix(in oklch, var(--pop-pink) 30%, var(--surface));
+}

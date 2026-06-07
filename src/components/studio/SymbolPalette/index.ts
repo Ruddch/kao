@@ -1,0 +1,1 @@
+export { SymbolPalette } from './SymbolPalette';

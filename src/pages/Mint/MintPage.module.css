@@ -1,0 +1,379 @@
+.page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* ─── Art panel ──────────────────────────────────────────────────────────── */
+
+.artPanel {
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  border-right: 3px solid var(--fg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grid takes all remaining height */
+.artPanel > :first-child {
+  flex: 1;
+  min-height: 0;
+}
+
+.artStats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-top: 3px solid var(--fg);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.artStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 4px;
+  flex: 1;
+}
+
+.artStatVal {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.artStatKey {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.artStatDivider {
+  width: 2px;
+  align-self: stretch;
+  background: var(--border);
+}
+
+/* ─── Mint panel ─────────────────────────────────────────────────────────── */
+
+.mintPanel {
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 640px;
+}
+
+.mintHead {}
+
+.mintTitle {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.mintSub {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ─── Current phase highlight ────────────────────────────────────────────── */
+
+.currentPhase {
+  border: 3px solid var(--fg);
+  box-shadow: var(--shadow-hard-md);
+  background: var(--pop-yellow);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.currentPhaseTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.currentPhaseLabel {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.currentPhaseDesc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg);
+}
+
+.currentPhaseMeta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* ─── Not started notice ─────────────────────────────────────────────────── */
+
+.notYet {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 3px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+  background: var(--surface);
+  padding: 20px 24px;
+}
+
+.notYetKao {
+  font-size: 32px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.notYetTitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.notYetDesc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ─── Eligibility checker ────────────────────────────────────────────────── */
+
+.checker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkerLabel {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.checkerRow {
+  display: flex;
+  gap: 8px;
+}
+
+.checkerInput {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px 14px;
+  border: 3px solid var(--fg);
+  background: var(--surface);
+  color: var(--fg);
+  outline: none;
+  min-width: 0;
+  transition: box-shadow 0.15s;
+}
+
+.checkerInput:focus {
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.checkerInput::placeholder {
+  color: var(--muted);
+}
+
+.useConnected {
+  background: none;
+  border: none;
+  color: var(--pop-blue);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.useConnected:hover { opacity: 0.75; }
+
+.checkerError {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--pop-red);
+  font-weight: 700;
+}
+
+/* ─── Schedule ───────────────────────────────────────────────────────────── */
+
+.schedule {}
+
+.scheduleTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  border: 3px solid var(--fg);
+}
+
+/* ─── Phase row ──────────────────────────────────────────────────────────── */
+
+.phaseRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--border);
+  background: var(--surface);
+  transition: background 0.15s;
+}
+
+.phaseRow:last-child { border-bottom: none; }
+
+.phaseRowActive {
+  background: var(--bg);
+}
+
+.phaseDot {
+  flex-shrink: 0;
+  width: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: block;
+}
+
+.dotLive {
+  background: var(--pop-red);
+  box-shadow: 0 0 0 3px oklch(58% 0.26 25 / 0.25);
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+.dotUpcoming { background: var(--border); }
+.dotEnded    { background: var(--muted); }
+
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 3px oklch(58% 0.26 25 / 0.25); }
+  50%       { box-shadow: 0 0 0 6px oklch(58% 0.26 25 / 0.08); }
+}
+
+.phaseInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.phaseTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.phaseLabel {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.phaseMeta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.eligBadge {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border: 2px solid currentColor;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.eligYes {
+  color: var(--pop-green);
+  background: oklch(68% 0.16 145 / 0.12);
+}
+
+.eligNo {
+  color: var(--muted);
+  background: transparent;
+}
+
+/* ─── Mint action ────────────────────────────────────────────────────────── */
+
+.mintAction {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mintBtn {
+  width: 100%;
+  justify-content: center;
+  font-size: 15px !important;
+  padding: 14px 24px !important;
+}
+
+.mintDisclaimer {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .artPanel {
+    position: relative;
+    height: 300px;
+    top: 0;
+    border-right: none;
+    border-bottom: 3px solid var(--fg);
+  }
+
+  .mintPanel {
+    padding: 24px 20px;
+    max-width: 100%;
+  }
+}

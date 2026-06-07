@@ -1,0 +1,1 @@
+export { HeroKaomoji } from './HeroKaomoji';

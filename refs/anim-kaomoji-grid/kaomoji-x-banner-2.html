@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="ja"><head><script data-od-sandbox-shim="">(function(){
+  function makeStore(){
+    var data = {};
+    var api = {
+      getItem: function(k){ return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
+      setItem: function(k, v){ data[k] = String(v); },
+      removeItem: function(k){ delete data[k]; },
+      clear: function(){ data = {}; },
+      key: function(i){ return Object.keys(data)[i] || null; }
+    };
+    Object.defineProperty(api, 'length', { get: function(){ return Object.keys(data).length; } });
+    return api;
+  }
+  function tryShim(name){
+    var works = false;
+    try { works = !!window[name] && typeof window[name].getItem === 'function'; void window[name].length; }
+    catch (_) { works = false; }
+    if (works) return;
+    try { Object.defineProperty(window, name, { configurable: true, value: makeStore() }); }
+    catch (_) { try { window[name] = makeStore(); } catch (__) {} }
+  }
+  tryShim('localStorage');
+  tryShim('sessionStorage');
+  document.addEventListener('click', (e) => {
+    if (!e.target || !(e.target instanceof Element)) return;
+    var link = e.target.closest('a[href]');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (href === null) return;
+    var isAnchor = href.startsWith('#') || href === '';
+    if (isAnchor) {
+      e.preventDefault();
+      if (href === '' || href === '#') {
+        window.scrollTo({ top: 0 });
+        history.replaceState(null, '', ' ');
+      } else {
+        var targetId = href.slice(1);
+        var target = targetId ? document.getElementById(targetId) : null;
+        if (target) {
+          target.scrollIntoView();
+          location.hash === href && history.replaceState(null, '', ' ');
+          location.hash = href;
+        }
+      }
+    } else if (link.getAttribute('target') === '_blank') {
+      e.preventDefault();
+      let safe = false;
+      try {
+        var url = new URL(href, location.href);
+        safe =
+          url.protocol === 'http:' ||
+          url.protocol === 'https:' ||
+          url.protocol === 'mailto:';
+      } catch (_) {}
+      safe && window.open(href, '_blank', 'noopener,noreferrer');
+    }
+  });
+})();</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1500">
+  <title>カオモジ — X header banner 1500×500</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=M+PLUS+Rounded+1c:wght@800;900&amp;family=Noto+Sans+JP:wght@700;900&amp;family=Zen+Kaku+Gothic+New:wght@900&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        oklch(99% 0.01 95);
+      --surface:   oklch(100% 0 0);
+      --fg:        oklch(18% 0.02 260);
+      --muted:     oklch(42% 0.03 260);
+      --border:    oklch(75% 0.04 260);
+      --accent:    oklch(58% 0.24 25);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+      --font-body:    'Noto Sans JP', 'Hiragino Sans', sans-serif;
+      --font-mono:    'DotGothic16', ui-monospace, monospace;
+      --strip-w: 82px;
+      --content-gap: 240px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1500px;
+      height: 500px;
+      overflow: hidden;
+      background: var(--fg);
+    }
+
+    .banner {
+      position: relative;
+      width: 1500px;
+      height: 500px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+      color: var(--fg);
+      font-family: var(--font-body);
+    }
+
+    /* Left: decorative poster-edge band */
+    .campaign-strip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--strip-w);
+      height: 100%;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: 28px 1fr 22px;
+      border-right: 4px solid var(--fg);
+    }
+
+    .strip-edge {
+      background: var(--pop-cyan);
+      border-right: 3px solid var(--fg);
+    }
+
+    .strip-core {
+      background: var(--pop-red);
+    }
+
+    .strip-badge,
+    .strip-vertical-main { display: none; }
+
+    .strip-rail {
+      background:
+        repeating-linear-gradient(
+          180deg,
+          var(--pop-blue) 0,
+          var(--pop-blue) 14px,
+          var(--fg) 14px,
+          var(--fg) 16px
+        );
+      border-left: 3px solid var(--fg);
+    }
+
+    .bg-speed {
+      position: absolute;
+      inset: 0;
+      background:
+        var(--pop-yellow),
+        radial-gradient(ellipse 75% 110% at 52% 48%, var(--surface) 0%, transparent 68%);
+      z-index: 0;
+    }
+
+    .rail-tate {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 44px;
+      height: 100%;
+      background: var(--pop-cyan);
+      border-left: 3px solid var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+    }
+
+    .rail-tate span {
+      writing-mode: vertical-rl;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+    }
+
+    .content {
+      position: absolute;
+      left: calc(var(--strip-w) + var(--content-gap));
+      right: 44px;
+      top: 0;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      align-items: center;
+      padding: 28px 36px 28px 16px;
+      gap: 44px;
+      z-index: 2;
+    }
+
+    .hero-kao-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 400px;
+    }
+
+    /* Single poster plate behind kaomoji */
+    .hero-plate {
+      position: absolute;
+      width: 400px;
+      height: 220px;
+      z-index: 0;
+      pointer-events: none;
+      background: var(--pop-red);
+      border: 4px solid var(--fg);
+      transform: rotate(-4deg);
+      box-shadow: 8px 8px 0 var(--fg);
+    }
+
+    .hero-kao {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-body);
+      font-size: 96px;
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      padding: 24px 32px;
+      background: var(--surface);
+      border: 4px solid var(--fg);
+      box-shadow: 8px 8px 0 var(--fg);
+      transform: rotate(-2deg);
+      white-space: nowrap;
+      letter-spacing: 0;
+    }
+
+    .sticker-new {
+      position: absolute;
+      top: 18px;
+      right: 10%;
+      z-index: 5;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      background: var(--pop-yellow);
+      color: var(--fg);
+      border: 3px solid var(--fg);
+      padding: 6px 12px;
+      transform: rotate(8deg);
+      box-shadow: 4px 4px 0 var(--fg);
+      max-width: 11em;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .sticker-free {
+      position: absolute;
+      bottom: 36px;
+      right: 6%;
+      left: auto;
+      z-index: 5;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      background: var(--pop-cyan);
+      color: var(--fg);
+      border: 3px solid var(--fg);
+      padding: 6px 16px;
+      transform: rotate(-6deg);
+      box-shadow: 4px 4px 0 var(--fg);
+      letter-spacing: 0.08em;
+    }
+
+    .copy-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      padding-left: 4px;
+    }
+
+    .kicker {
+      display: inline-block;
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      background: var(--fg);
+      color: var(--surface);
+      border: 2px solid var(--fg);
+      padding: 7px 18px;
+      letter-spacing: 0.06em;
+    }
+
+    .brand-mark {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--pop-red);
+      text-shadow: 2px 2px 0 var(--pop-yellow), 4px 4px 0 var(--fg);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .slogan-main {
+      font-family: var(--font-display);
+      font-size: 60px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      max-width: 13ch;
+    }
+
+    .slogan-main em {
+      font-style: normal;
+      color: var(--pop-red);
+      background: linear-gradient(transparent 62%, color-mix(in oklch, var(--pop-yellow) 85%, transparent) 62%);
+    }
+
+    .slogan-sub {
+      font-size: 22px;
+      font-weight: 700;
+      max-width: 32ch;
+      line-height: 1.35;
+      border-left: 6px solid var(--pop-red);
+      padding-left: 14px;
+      color: var(--muted);
+    }
+
+    .edge-band {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 12px;
+      background: var(--pop-red);
+      border-top: 3px solid var(--fg);
+      z-index: 3;
+    }
+  </style>
+<style data-od-inspect-overrides="">
+</style>
+</head>
+<body>
+  <article class="banner" role="img" aria-label="Kaomoji X header — Japanese campaign poster banner" data-od-id="path-0">
+    <div class="bg-speed" aria-hidden="true" data-od-id="path-0-0"></div>
+
+    <aside class="campaign-strip" aria-label="キャンペーン帯" data-od-id="path-0-1">
+      <div class="strip-edge" aria-hidden="true" data-od-id="path-0-1-0"></div>
+      <div class="strip-core" data-od-id="path-0-1-1">
+        <span class="strip-badge">無料</span>
+        <p class="strip-vertical-main">2026春</p>
+      </div>
+      <div class="strip-rail" aria-hidden="true" data-od-id="path-0-1-2"></div>
+    </aside>
+
+    <div class="content" data-od-id="path-0-2">
+      <div class="hero-kao-wrap">
+        <div class="hero-plate" aria-hidden="true"></div>
+        <p class="hero-kao">(๑•̀ㅂ•́)و✧</p>
+        <span class="sticker-new">公式カオモジ</span>
+        <span class="sticker-free">無料キャンペーン</span>
+      </div>
+
+      <div class="copy-block">
+        <p class="kicker">2026 春の大感謝フェア</p>
+        <p class="brand-mark">カオモジ</p>
+        <h1 class="slogan-main" data-od-id="path-0-2-1-2">顔文字を、<br>毎日の<em>ひとこと</em>に。</h1>
+        <p class="slogan-sub">SNS・チャット・メール・日記まで、毎日のことばに。</p>
+      </div>
+    </div>
+
+    <div class="rail-tate" aria-hidden="true" data-od-id="path-0-3"><span>顔文字制作所 Kaomoji</span></div>
+
+    <div class="edge-band" aria-hidden="true" data-od-id="path-0-4"></div>
+  </article>
+
+
+<script data-od-snapshot-bridge="">(function(){
+  function copyComputedStyle(source, target){
+    if (!source || !target || source.nodeType !== 1 || target.nodeType !== 1) return;
+    var computed = window.getComputedStyle(source);
+    var style = target.getAttribute('style') || '';
+    for (var i = 0; i < computed.length; i++){
+      var prop = computed[i];
+      style += prop + ':' + computed.getPropertyValue(prop) + ';';
+    }
+    target.setAttribute('style', style);
+  }
+  function syncElementState(source, target){
+    var tag = source.tagName ? source.tagName.toLowerCase() : '';
+    if (tag === 'img' && source.currentSrc) target.setAttribute('src', source.currentSrc);
+    if (tag === 'input' || tag === 'textarea') target.setAttribute('value', source.value || '');
+    if (tag === 'canvas') {
+      try {
+        var img = document.createElement('img');
+        img.setAttribute('src', source.toDataURL('image/png'));
+        img.setAttribute('style', target.getAttribute('style') || '');
+        target.parentNode && target.parentNode.replaceChild(img, target);
+      } catch (_) {}
+    }
+  }
+  function inlineSnapshotStyles(originalRoot, cloneRoot){
+    copyComputedStyle(originalRoot, cloneRoot);
+    syncElementState(originalRoot, cloneRoot);
+    var originals = originalRoot.querySelectorAll('*');
+    var clones = cloneRoot.querySelectorAll('*');
+    var count = Math.min(originals.length, clones.length);
+    for (var i = 0; i < count; i++){
+      copyComputedStyle(originals[i], clones[i]);
+      syncElementState(originals[i], clones[i]);
+    }
+    var scripts = cloneRoot.querySelectorAll('script');
+    for (var s = scripts.length - 1; s >= 0; s--) scripts[s].remove();
+  }
+  function waitForImages(){
+    var imgs = Array.prototype.slice.call(document.images || []);
+    return Promise.all(imgs.map(function(img){
+      if (img.complete) return Promise.resolve();
+      return new Promise(function(resolve){
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      });
+    }));
+  }
+  function renderSnapshot(id){
+    var w = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 1);
+    var h = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 1);
+    var dpr = window.devicePixelRatio || 1;
+    var docW = Math.max(w, document.documentElement.scrollWidth || 0, document.body ? document.body.scrollWidth : 0);
+    var docH = Math.max(h, document.documentElement.scrollHeight || 0, document.body ? document.body.scrollHeight : 0);
+    var clone = document.documentElement.cloneNode(true);
+    clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    inlineSnapshotStyles(document.documentElement, clone);
+    var serializer = new XMLSerializer();
+    var html = serializer.serializeToString(clone);
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<foreignObject x="' + (-window.scrollX || 0) + '" y="' + (-window.scrollY || 0) + '" width="' + docW + '" height="' + docH + '">' +
+      html +
+      '</foreignObject></svg>';
+    var img = new Image();
+    img.onload = function(){
+      try {
+        var canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.floor(w * dpr));
+        canvas.height = Math.max(1, Math.floor(h * dpr));
+        var ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('no 2d context');
+        ctx.scale(dpr, dpr);
+        ctx.drawImage(img, 0, 0, w, h);
+        window.parent.postMessage({ type: 'od:snapshot:result', id: id, dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height }, '*');
+      } catch (err) {
+        window.parent.postMessage({ type: 'od:snapshot:result', id: id, error: String(err && err.message || err) }, '*');
+      }
+    };
+    img.onerror = function(){
+      window.parent.postMessage({ type: 'od:snapshot:result', id: id, error: 'snapshot image failed' }, '*');
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+  window.addEventListener('message', function(ev){
+    var data = ev && ev.data;
+    if (!data || data.type !== 'od:snapshot' || !data.id) return;
+    waitForImages().then(function(){ renderSnapshot(String(data.id)); });
+  });
+})();</script><script data-od-srcdoc-transport-activation="">(function(){
+  window.addEventListener('message', function(ev){
+    var data = ev && ev.data;
+    if (!data || data.type !== 'od:srcdoc-transport-activate' || typeof data.html !== 'string') return;
+    document.open();
+    document.write(data.html);
+    document.close();
+  });
+})();</script></body></html>

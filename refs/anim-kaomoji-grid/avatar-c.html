@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=400">
+  <title>Avatar B — bold face</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&family=M+PLUS+Rounded+1c:wght@900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 400px; height: 400px; overflow: hidden; }
+
+    .ava {
+      width: 400px;
+      height: 400px;
+      background: var(--surface);
+      border: 8px solid var(--fg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .kao {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .bar {
+      background: var(--pop-red);
+      padding: 4px 24px;
+      border: 3px solid var(--fg);
+    }
+
+    .bar span {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--surface);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="ava">
+    <p class="kao">(◕‿◕)</p>
+    <div class="bar"><span>カオモジ</span></div>
+  </div>
+</body>
+</html>

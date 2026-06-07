@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1500">
+  <title>Kaomoji Culture Banner 1500×600</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Zen+Kaku+Gothic+New:wght@900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --pop-green:  oklch(68% 0.16 145);
+      --pop-pink:   oklch(72% 0.18 350);
+      --pop-orange: oklch(72% 0.2 55);
+      --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+      --font-mono:    'DotGothic16', ui-monospace, monospace;
+      --font-kao:     'Noto Sans JP', 'Noto Sans Symbols 2', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1500px;
+      height: 600px;
+      overflow: hidden;
+    }
+
+    .canvas {
+      position: relative;
+      width: 1500px;
+      height: 600px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+    }
+
+    .bg-diagonal {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: var(--pop-yellow);
+    }
+    .bg-diagonal::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 250px;
+      background: var(--pop-red);
+      clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .sticker {
+      position: absolute;
+      background: var(--surface);
+      border: 4px solid var(--fg);
+      box-shadow: 6px 6px 0 var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    .sticker .kao {
+      font-family: var(--font-kao);
+      font-weight: 700;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0;
+      line-height: 1;
+      white-space: nowrap;
+      font-size: 48px;
+    }
+
+    /* 3 stickers: mostly vertical, slight horizontal drift, small overlap */
+    .s1 {
+      width: 440px;
+      height: 170px;
+      top: 20px;
+      left: 120px;
+      z-index: 2;
+    }
+
+    .s2 {
+      width: 440px;
+      height: 170px;
+      top: 210px;
+      left: 200px;
+      z-index: 3;
+    }
+
+    .s3 {
+      width: 440px;
+      height: 170px;
+      top: 400px;
+      left: 280px;
+      z-index: 4;
+    }
+
+    .title-block {
+      position: absolute;
+      z-index: 5;
+      right: 60px;
+      top: 80px;
+      text-align: right;
+    }
+
+    .title-jp {
+      font-family: var(--font-display);
+      font-size: 80px;
+      font-weight: 900;
+      color: var(--fg);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
+    .title-en {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: 0.12em;
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    .subtitle {
+      position: absolute;
+      z-index: 5;
+      right: 60px;
+      bottom: 80px;
+      text-align: right;
+    }
+
+    .subtitle-text {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--surface);
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="bg-diagonal" aria-hidden="true"></div>
+
+    <div class="sticker s1"><span class="kao">(๑•̀ㅂ•́)و✧</span></div>
+    <div class="sticker s2"><span class="kao">ლ(=ↀωↀ=)ლ</span></div>
+    <div class="sticker s3"><span class="kao">ฅ(៸៸ˆ>⩊<ˆ៸៸)ฅ</span></div>
+
+    <div class="title-block">
+      <div class="title-jp">カオモジ</div>
+      <div class="title-en">KAOMOJI CULTURE</div>
+    </div>
+
+    <div class="subtitle">
+      <div class="subtitle-text">顔文字の世界<br>顔文字の文化</div>
+    </div>
+  </div>
+</body>
+</html>

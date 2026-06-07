@@ -1,0 +1,51 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border: var(--border-thin);
+  transition: background var(--duration-fast);
+}
+
+.nav {
+  background: var(--pop-cyan);
+  font-family: var(--font-display);
+  font-size: 13px;
+  padding: 8px 18px;
+}
+
+.nav:hover,
+.nav.active {
+  background: var(--pop-green);
+}
+
+.filter {
+  background: var(--surface);
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.filter:hover,
+.filter.active {
+  background: var(--pop-yellow);
+  outline: 3px solid var(--pop-red);
+  outline-offset: -1px;
+}
+
+.external {
+  background: var(--surface);
+}
+
+.external:hover {
+  background: var(--pop-cyan);
+}
+
+.opensea {
+  background: var(--pop-blue);
+  color: var(--surface);
+}
+
+.opensea:hover {
+  background: color-mix(in oklch, var(--pop-blue) 85%, var(--fg));
+}

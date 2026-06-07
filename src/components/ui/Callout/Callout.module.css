@@ -1,0 +1,26 @@
+.callout {
+  border-left: 4px solid var(--fg);
+  padding: var(--gap-sm) var(--gap-md);
+  margin: var(--gap-md) 0;
+  font-size: 13px;
+}
+
+.tip {
+  background: color-mix(in oklch, var(--pop-green) 15%, var(--surface));
+  border-left-color: var(--pop-green);
+}
+
+.warning {
+  background: color-mix(in oklch, var(--pop-yellow) 30%, var(--surface));
+  border-left-color: var(--pop-yellow);
+}
+
+.danger {
+  background: color-mix(in oklch, var(--pop-orange) 20%, var(--surface));
+  border-left-color: var(--pop-orange);
+}
+
+.title {
+  display: block;
+  margin-bottom: 4px;
+}

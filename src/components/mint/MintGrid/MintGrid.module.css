@@ -1,0 +1,96 @@
+/* CSS vars read by JS */
+.wrap {
+  --mg-cell: 72px;
+  --mg-gap: 5px;
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--pop-yellow);
+}
+
+.grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  grid-template-columns: repeat(5, var(--mg-cell));
+  grid-template-rows: repeat(5, var(--mg-cell));
+  gap: var(--mg-gap);
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.cell {
+  width: var(--mg-cell);
+  height: var(--mg-cell);
+  border: 1px solid var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 2px;
+  font-family: var(--font-kao);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--fg);
+  background: var(--surface);
+  font-kerning: none;
+}
+
+.cellCenter {
+  z-index: 2;
+  isolation: isolate;
+}
+
+.cellInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.kaoLayer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transform: translateY(0);
+}
+
+.kaoText {
+  display: block;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
+}
+
+/* Bottom label overlay */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  background: linear-gradient(to top, oklch(88% 0.18 95 / 0.92) 60%, transparent);
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.overlayLabel {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  background: var(--fg);
+  color: var(--surface);
+  padding: 4px 12px;
+}

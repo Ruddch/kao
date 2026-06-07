@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=400">
+  <title>Avatar A — card on yellow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&family=M+PLUS+Rounded+1c:wght@900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 400px; height: 400px; overflow: hidden; }
+
+    .ava {
+      width: 400px;
+      height: 400px;
+      background: var(--pop-yellow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 5px solid var(--fg);
+      box-shadow: 7px 7px 0 var(--fg);
+      padding: 22px 34px;
+      transform: rotate(-2deg);
+    }
+
+    .kao {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 60px;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .label {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--pop-red);
+      text-shadow: 1px 1px 0 var(--fg);
+      letter-spacing: -0.02em;
+    }
+  </style>
+</head>
+<body>
+  <div class="ava">
+    <div class="card">
+      <p class="kao">(◕‿◕)</p>
+    </div>
+    <p class="label">カオモジ</p>
+  </div>
+</body>
+</html>

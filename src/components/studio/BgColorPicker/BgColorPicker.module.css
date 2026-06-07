@@ -1,0 +1,48 @@
+.root {
+  margin-bottom: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.swatch {
+  position: relative;
+  aspect-ratio: 1;
+  border: var(--border-thin);
+  cursor: pointer;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+.swatch:hover {
+  outline: 2px solid var(--fg);
+  outline-offset: 1px;
+}
+
+.swatchSelected {
+  outline: 3px solid var(--pop-red);
+  outline-offset: -1px;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.plateDot {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--fg);
+  transform: rotate(-8deg);
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .plateDot {
+    width: 10px;
+    height: 10px;
+  }
+}

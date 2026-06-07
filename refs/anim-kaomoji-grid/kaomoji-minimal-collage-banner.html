@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1500">
+  <title>Kaomoji Collage 1500×500</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans+JP:wght@700;900&family=Zen+Kaku+Gothic+New:wght@900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --pop-blue:   oklch(55% 0.2 250);
+      --pop-green:  oklch(68% 0.16 145);
+      --pop-pink:   oklch(72% 0.18 350);
+      --pop-orange: oklch(72% 0.2 55);
+      --font-display: 'M PLUS Rounded 1c', 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
+      --font-mono:    'DotGothic16', ui-monospace, monospace;
+      --font-kao:     'Noto Sans JP', 'Noto Sans Symbols 2', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1500px;
+      height: 500px;
+      overflow: hidden;
+    }
+
+    .canvas {
+      position: relative;
+      width: 1500px;
+      height: 500px;
+      overflow: hidden;
+      background: var(--pop-yellow);
+    }
+
+    /* === ГЛАВНАЯ КОМПОЗИЦИЯ === */
+    .loupe {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      z-index: 2;
+    }
+
+    /* Стикеры-карточки */
+    .sticker {
+      background: var(--surface);
+      border: 4px solid var(--fg);
+      box-shadow: 6px 6px 0 var(--fg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .sticker .kao {
+      font-family: var(--font-kao);
+      font-weight: 700;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0;
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--fg);
+    }
+
+    /* Карточка 1 — зелёный фон */
+    .s1 {
+      width: 320px;
+      height: 200px;
+      background: var(--pop-green);
+      transform: rotate(-3deg);
+    }
+    .s1 .kao { font-size: 56px; }
+
+    /* Карточка 2 — розовый, крупнее, центральная */
+    .s2 {
+      width: 720px;
+      height: 220px;
+      background: var(--pop-pink);
+      transform: rotate(1deg);
+      z-index: 2;
+      box-shadow: 8px 8px 0 var(--fg);
+      padding: 20px 40px;
+    }
+    .s2 .kao { font-size: 60px; color: var(--surface); letter-spacing: 1px; }
+
+    /* Карточка 3 — голубой фон */
+    .s3 {
+      width: 320px;
+      height: 200px;
+      background: var(--pop-cyan);
+      transform: rotate(3deg);
+    }
+    .s3 .kao { font-size: 56px; }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="loupe">
+      <div class="sticker s1">
+        <span class="kao">(＾▽＾)</span>
+      </div>
+      <div class="sticker s2">
+        <span class="kao">(╯°□°）╯︵ ┻━┻</span>
+      </div>
+      <div class="sticker s3">
+        <span class="kao">(ಥ﹏ಥ)</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

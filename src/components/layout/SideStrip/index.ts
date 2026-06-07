@@ -1,0 +1,1 @@
+export { SideStrip } from './SideStrip';

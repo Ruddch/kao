@@ -1,0 +1,26 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--pop-yellow);
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: var(--strip-w) 1fr var(--rail-right-w);
+  flex: 1;
+  width: 100%;
+}
+
+.main {
+  min-width: 0;
+  background:
+    var(--pop-yellow),
+    radial-gradient(ellipse 75% 110% at 52% 48%, var(--surface) 0%, transparent 68%);
+}
+
+@media (max-width: 1279px) {
+  .frame {
+    grid-template-columns: 1fr;
+  }
+}

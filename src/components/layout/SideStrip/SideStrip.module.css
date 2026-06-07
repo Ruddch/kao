@@ -1,0 +1,55 @@
+/* Left campaign strip — kaomoji-x-banner-2.html */
+
+.campaignStrip {
+  width: var(--strip-w);
+  display: grid;
+  grid-template-columns: var(--strip-edge) 1fr var(--strip-rail);
+  align-self: stretch;
+  border-right: 4px solid var(--fg);
+}
+
+.stripEdge {
+  background: var(--pop-cyan);
+  border-right: 3px solid var(--fg);
+}
+
+.stripCore {
+  background: var(--pop-red);
+}
+
+.stripRail {
+  background: repeating-linear-gradient(
+    180deg,
+    var(--pop-blue) 0,
+    var(--pop-blue) 14px,
+    var(--fg) 14px,
+    var(--fg) 16px
+  );
+  border-left: 3px solid var(--fg);
+}
+
+/* Right vertical rail */
+.railTate {
+  width: var(--rail-right-w);
+  align-self: stretch;
+  background: var(--pop-cyan);
+  border-left: 3px solid var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.railTate span {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+@media (max-width: 1279px) {
+  .campaignStrip,
+  .railTate {
+    display: none;
+  }
+}
