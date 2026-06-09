@@ -117,7 +117,7 @@ export function HomePage() {
 
       <section>
         <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={IN_VIEW}>
-          <SectionHead title="Roadmap" subtitle="ECOSYSTEM MILESTONES" />
+          <SectionHead title="Stages" subtitle="ECOSYSTEM MILESTONES" />
         </motion.div>
         <motion.div
           className={styles.roadmap}
