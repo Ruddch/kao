@@ -1,6 +1,6 @@
 import type { GlyphLookup, GlyphPack, RoleCategories } from './types';
 
-const GLYPHS_BASE = '/glyphs';
+const GLYPHS_BASE = `${import.meta.env.BASE_URL}glyphs`.replace(/\/?$/, '');
 
 let packPromise: Promise<GlyphPack> | null = null;
 let lookupPromise: Promise<GlyphLookup> | null = null;
