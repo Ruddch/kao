@@ -50,7 +50,7 @@
 .kaoExit {
   z-index: 1;
   pointer-events: none;
-  animation: kaoExit 0.1s ease both;
+  animation: kaoExit 0.01s ease both;
 }
 
 @keyframes kaoEnter {
@@ -75,7 +75,7 @@
   100% {
     opacity: 0;
     transform: rotate(-2deg) scale(1.08);
-    filter: blur(7px);
+    /* filter: blur(7px); */
   }
 }
 
