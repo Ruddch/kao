@@ -1,0 +1,74 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--gap-sm);
+  flex-shrink: 0;
+}
+
+.tab,
+.tabActive {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+  padding: 7px 12px;
+  border: var(--border-thin);
+  background: var(--surface);
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.tabActive {
+  background: var(--pop-yellow);
+  outline: 3px solid var(--pop-red);
+  outline-offset: -1px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  overflow-y: auto;
+  max-height: 280px;
+  padding-right: 2px;
+}
+
+.symbolBtn {
+  border: var(--border-thin);
+  padding: 4px 2px;
+  background: var(--surface);
+  cursor: pointer;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg);
+}
+
+.symbolBtn:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--pop-cyan) 40%, var(--surface));
+}
+
+.symbolChar {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+    max-height: 220px;
+  }
+}

@@ -5,6 +5,7 @@ export type SocialPlatform = 'twitter' | 'discord' | 'opensea';
 interface SocialIconLinkProps {
   platform: SocialPlatform;
   href: string;
+  disabled?: boolean;
 }
 
 const LABELS: Record<SocialPlatform, string> = {
@@ -36,7 +37,19 @@ function Icon({ platform }: { platform: SocialPlatform }) {
   }
 }
 
-export function SocialIconLink({ platform, href }: SocialIconLinkProps) {
+export function SocialIconLink({ platform, href, disabled }: SocialIconLinkProps) {
+  if (disabled) {
+    return (
+      <span
+        className={[styles.link, styles.disabled].join(' ')}
+        aria-label={`${LABELS[platform]} (coming soon)`}
+        aria-disabled="true"
+      >
+        <Icon platform={platform} />
+      </span>
+    );
+  }
+
   return (
     <a
       href={href}

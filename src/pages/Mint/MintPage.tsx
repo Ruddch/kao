@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAccount } from 'wagmi';
-import { ConnectKitButton } from 'connectkit';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { MintGrid } from '../../components/mint/MintGrid';
 import {
   MINT_PHASES,
   MOCK_WHITELIST,
-  AVAILABLE,
   TOTAL_SUPPLY,
   type MintPhase,
 } from '../../data/mock/mintPhases';
@@ -22,15 +20,14 @@ function normalizeAddr(addr: string) {
 
 function checkEligibility(addr: string): Record<string, boolean> {
   const norm = normalizeAddr(addr);
-  const result: Record<string, boolean> = {};
-  for (const phase of MINT_PHASES) {
-    const list = MOCK_WHITELIST[phase.id] ?? [];
-    // public phase: eligible if live
-    result[phase.id] = phase.id === 'public'
-      ? phase.status === 'live'
-      : list.map(normalizeAddr).includes(norm);
-  }
-  return result;
+  const onGtd = (MOCK_WHITELIST.gtd ?? []).map(normalizeAddr).includes(norm);
+  const onFcfs = (MOCK_WHITELIST.fcfs ?? []).map(normalizeAddr).includes(norm);
+
+  return {
+    gtd: onGtd,
+    fcfs: onGtd || onFcfs,
+    public: true,
+  };
 }
 
 function isEthAddress(v: string) {
@@ -65,20 +62,18 @@ function PhaseRow({
       <div className={styles.phaseInfo}>
         <div className={styles.phaseTop}>
           <span className={styles.phaseLabel}>{phase.label}</span>
-          {phase.status === 'live' && <Badge variant="live" blink />}
-          {phase.status === 'upcoming' && <Badge variant="tba" />}
+          {/* {phase.status === 'live' && <Badge variant="live" blink />} */}
+          {/* {phase.status === 'upcoming' && <Badge variant="tba" />} */}
         </div>
         <div className={styles.phaseMeta}>
-          {phase.startsAt && <span>{phase.startsAt}</span>}
+          {/* {phase.startsAt && <span>{phase.startsAt}</span>} */}
           {phase.price && <span>Price: {phase.price}</span>}
-          <span>Limit: {phase.limitPerWallet} per wallet</span>
+          {/* <span>Limit: {phase.limitPerWallet} per wallet</span> */}
         </div>
       </div>
 
       {eligible !== null && (
-        <div className={`${styles.eligBadge} ${eligible ? styles.eligYes : styles.eligNo}`}>
-          {eligible ? '✓ ELIGIBLE' : '✗ NOT ELIGIBLE'}
-        </div>
+        <Badge variant={eligible ? 'eligible' : 'notEligible'} />
       )}
     </div>
   );
@@ -123,20 +118,12 @@ export function MintPage() {
     }
   };
 
-  const eligibleForActive =
-    checked && activePhase ? checked[activePhase.id] ?? false : false;
-
   return (
     <div className={styles.page}>
       {/* ── Art panel ─────────────────────────────────────────────────── */}
       <div className={styles.artPanel}>
         <MintGrid />
         <div className={styles.artStats}>
-          <div className={styles.artStat}>
-            <span className={styles.artStatVal}>{AVAILABLE}</span>
-            <span className={styles.artStatKey}>Available</span>
-          </div>
-          <div className={styles.artStatDivider} />
           <div className={styles.artStat}>
             <span className={styles.artStatVal}>{TOTAL_SUPPLY}</span>
             <span className={styles.artStatKey}>Total supply</span>
@@ -153,9 +140,9 @@ export function MintPage() {
       >
         {/* Header */}
         <motion.div variants={FADE} className={styles.mintHead}>
-          <h1 className={styles.mintTitle}>Mint Kaomoji</h1>
+          <h1 className={styles.mintTitle}>Eligibility Checker</h1>
           <p className={styles.mintSub}>
-            Your personalized on-chain digital companion.
+            Check if your wallet is on the whitelist for upcoming mint phases.
           </p>
         </motion.div>
 
@@ -169,7 +156,7 @@ export function MintPage() {
             <p className={styles.currentPhaseDesc}>{activePhase.description}</p>
             <div className={styles.currentPhaseMeta}>
               <span>Price: <strong>{activePhase.price ?? 'TBA'}</strong></span>
-              <span>Limit: <strong>{activePhase.limitPerWallet} per wallet</strong></span>
+              {/* <span>Limit: <strong>{activePhase.limitPerWallet} per wallet</strong></span> */}
             </div>
           </motion.div>
         )}
@@ -179,8 +166,11 @@ export function MintPage() {
           <motion.div variants={FADE} className={styles.notYet}>
             <span className={`kao ${styles.notYetKao}`}>(´• ω •`)</span>
             <div>
-              <p className={styles.notYetTitle}>Mint not started yet</p>
-              <p className={styles.notYetDesc}>All phases are upcoming. Check eligibility below to see if your wallet is on the list.</p>
+              <p className={styles.notYetTitle}>Whitelist still updating</p>
+              <p className={styles.notYetDesc}>
+                We&apos;re still adding wallets from partner collabs. Not everyone is in the checker yet.
+                If yours isn&apos;t listed, check back soon. Missing for now doesn&apos;t mean you&apos;re out.
+              </p>
             </div>
           </motion.div>
         )}
@@ -209,7 +199,7 @@ export function MintPage() {
 
         {/* Mint schedule */}
         <motion.div variants={FADE} className={styles.schedule}>
-          <p className={styles.scheduleTitle}>MINT SCHEDULE</p>
+          <p className={styles.scheduleTitle}>PHASE SCHEDULE</p>
           <div className={styles.scheduleList}>
             {MINT_PHASES.map((phase) => (
               <PhaseRow
@@ -220,30 +210,6 @@ export function MintPage() {
               />
             ))}
           </div>
-        </motion.div>
-
-        {/* Mint action */}
-        <motion.div variants={FADE} className={styles.mintAction}>
-          {!isConnected ? (
-            <ConnectKitButton.Custom>
-              {({ show }) => (
-                <Button onClick={show} className={styles.mintBtn}>
-                  Connect Wallet to Mint
-                </Button>
-              )}
-            </ConnectKitButton.Custom>
-          ) : eligibleForActive ? (
-            <Button className={styles.mintBtn} disabled>
-              Mint — coming soon
-            </Button>
-          ) : (
-            <Button variant="ghost" className={styles.mintBtn} disabled>
-              {checked ? 'Not eligible for current phase' : 'Check eligibility above'}
-            </Button>
-          )}
-          <p className={styles.mintDisclaimer}>
-            Smart contract not yet deployed. Minting is not active.
-          </p>
         </motion.div>
       </motion.div>
     </div>

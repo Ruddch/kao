@@ -38,6 +38,30 @@
   letter-spacing: 0.1em;
 }
 
+.eligible {
+  background: var(--pop-green);
+  color: var(--fg);
+  border: 3px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+  font-size: 11px;
+  padding: 5px 12px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.notEligible {
+  background: var(--fg);
+  color: var(--surface);
+  border: 3px solid var(--fg);
+  box-shadow: 3px 3px 0 var(--muted);
+  font-size: 11px;
+  padding: 5px 12px;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .live {
   background: var(--pop-red);
   color: var(--surface);

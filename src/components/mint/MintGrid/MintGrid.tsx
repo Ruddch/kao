@@ -123,6 +123,9 @@ export function MintGrid() {
       cells.forEach(({ layer, inner }) => fitText(layer, inner));
     });
 
+    const ro = new ResizeObserver(() => applyCamera());
+    ro.observe(wrap);
+
     // ── Swap a single cell (slide up) ─────────────────────────────────
     function swapCell(cell: Cell) {
       const kao  = pickNot(KAOMOJI_POOL, cell.kao);
@@ -169,6 +172,7 @@ export function MintGrid() {
     }, SWAP_MS);
 
     return () => {
+      ro.disconnect();
       clearInterval(iv);
       cells.forEach((c) => { if (c.timer) clearTimeout(c.timer); });
       grid.innerHTML = '';

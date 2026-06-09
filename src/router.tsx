@@ -21,7 +21,7 @@ export const router = createBrowserRouter(
     element: <GlobalLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'mint', element: <MintPage /> },
+      { path: 'checker', element: <MintPage /> },
       { path: 'studio', element: <StudioPage /> },
       {
         path: 'docs',

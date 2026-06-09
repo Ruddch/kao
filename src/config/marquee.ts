@@ -29,19 +29,19 @@ export const homeMarqueeConfig: MarqueeConfig = {
   heightPx: 44,
   segments: [
     {
-      text: 'BURN · EARN · MODIFY',
+      text: 'BURN · INK · EXPAND',
       backgroundColor: 'var(--pop-red)',
       color: 'var(--surface)',
     },
-    { text: 'DIGITAL COMPANION NFT' },
+    { text: 'デジタルペット' },
+    { text: 'SCULPT YOUR KAOMOJI' },
     {
       text: 'カオモジ KAOMOJI',
       backgroundColor: 'var(--pop-red)',
       color: 'var(--surface)',
     },
-    { text: 'BURN FOR MODIFICATION POINTS' },
-    { text: 'AI COMPANION · PHYSICAL DEVICE' },
-    { text: 'Enter Studio →' },
+    { text: 'THE FACE THAT KNOWS YOU' },
+    { text: 'TRY THE EDITOR' },
   ],
 };
 

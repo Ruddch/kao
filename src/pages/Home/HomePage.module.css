@@ -26,11 +26,14 @@
   text-decoration: underline;
 }
 
-.mechanics,
-.philosophy {
+.mechanicsSection {
+  scroll-margin-top: var(--header-height);
+}
+
+.mechanics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-xs);
+  gap: var(--gap-sm);
   padding:
     var(--content-pad-top)
     var(--content-pad-right)
@@ -38,47 +41,66 @@
     var(--content-pad-left);
 }
 
-.featNum {
-  font-family: var(--font-mono);
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--pop-red);
-  line-height: 1;
-  opacity: 0.7;
+.featCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 220px;
+  padding-bottom: calc(var(--gap-lg) + 56px);
 }
 
-.featKao {
-  font-size: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border: 3px solid var(--fg);
-  box-shadow: 4px 4px 0 var(--fg);
-  background: var(--surface);
+.featHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.featNum {
+  font-family: var(--font-mono);
+  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 900;
+  color: var(--pop-red);
   line-height: 1;
-  letter-spacing: 0;
-  white-space: nowrap;
-  margin: 4px 0;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
 }
 
 .featTitle {
   font-family: var(--font-display);
-  font-size: clamp(16px, 1.6vw, 22px);
+  font-size: clamp(20px, 2.2vw, 28px);
   font-weight: 900;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  line-height: 1.15;
+  line-height: 1.1;
+  margin: 0;
 }
 
 .featDesc {
-  font-size: clamp(13px, 1.1vw, 15px);
-  line-height: 1.55;
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.65;
   color: var(--fg);
-  margin-top: 8px;
-  font-weight: 500;
+  margin: 0;
+  font-weight: 700;
+  max-width: 38ch;
+}
+
+.featKao {
+  position: absolute;
+  bottom: var(--gap-md);
+  right: var(--gap-md);
+  font-size: clamp(20px, 2vw, 26px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border: 3px solid var(--fg);
+  box-shadow: 5px 5px 0 var(--fg);
+  background: var(--surface);
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transform: rotate(-3deg);
+  z-index: 1;
 }
 
 .featcyan { background: color-mix(in oklch, var(--pop-cyan) 35%, var(--surface)); }
@@ -202,6 +224,31 @@
   line-height: 1.2;
 }
 
+.timeItemMasked {
+  cursor: default;
+}
+
+.timeMaskedLabel {
+  font-family: var(--font-display);
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--muted);
+  filter: blur(3px);
+  opacity: 0.7;
+  user-select: none;
+  pointer-events: none;
+}
+
+.timeMaskedBadge {
+  display: inline-block;
+  filter: blur(4px);
+  opacity: 0.55;
+  user-select: none;
+  pointer-events: none;
+}
+
 .timeTba {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -262,9 +309,25 @@
 }
 
 @media (max-width: 767px) {
-  .mechanics,
-  .philosophy {
+  .mechanics {
     grid-template-columns: 1fr;
+  }
+
+  .featCard {
+    min-height: 0;
+    padding-bottom: calc(var(--gap-lg) + 48px);
+  }
+
+  .featKao {
+    bottom: var(--gap-sm);
+    right: var(--gap-sm);
+    font-size: 18px;
+    padding: 8px 10px;
+    transform: rotate(-2deg);
+  }
+
+  .featDesc {
+    max-width: none;
   }
 
   .roadmap {

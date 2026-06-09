@@ -53,6 +53,36 @@
   flex-wrap: wrap;
 }
 
+.chipDisabled {
+  position: relative;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.chipLabel {
+  opacity: 0.45;
+}
+
+.stickerBadge {
+  position: absolute;
+  top: -7px;
+  right: -6px;
+  z-index: 2;
+  transform: rotate(8deg);
+  line-height: 0;
+  pointer-events: none;
+}
+
+.stickerBadge > span {
+  font-size: 9px;
+  padding: 3px 7px;
+  border: 2px solid var(--fg);
+  box-shadow: 2px 2px 0 var(--fg);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
 .divider {
   width: 2px;
   height: 28px;

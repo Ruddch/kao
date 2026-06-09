@@ -13,10 +13,16 @@
     transform var(--duration-fast);
 }
 
-.link:hover {
+.link:hover:not(.disabled) {
   background: var(--surface);
   color: var(--fg);
   transform: translateY(-1px);
+}
+
+.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .svg {

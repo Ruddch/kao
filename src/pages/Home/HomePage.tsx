@@ -1,9 +1,7 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { COLLECTION, EXTERNAL_LINKS } from '../../config/external';
 import { HeroBanner } from '../../components/home/HeroBanner';
+import { KaomojiDemoSection } from '../../components/home/KaomojiDemoSection';
 import { Badge } from '../../components/ui/Badge';
-import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { SectionHead } from '../../components/ui/SectionHead';
 import styles from './HomePage.module.css';
@@ -11,42 +9,24 @@ import styles from './HomePage.module.css';
 const MECHANICS = [
   {
     num: '01',
-    title: 'Burn for Points',
+    title: 'Burn for Ink',
     kao: '(╯°□°）╯',
-    desc: 'Sacrifice an NFT to earn modification points. Irreversible — each burn fuels personalization and deflates the supply.',
+    desc: 'Sacrifice an NFT to earn Ink. Ink is the currency of customization. Every burn is permanent and shrinks the supply.',
     bg: 'yellow' as const,
   },
   {
     num: '02',
-    title: 'Spend & Customize',
+    title: 'Edit & Expand',
     kao: 'ლ(´ڡ`ლ)',
-    desc: 'Use your points to change colors and traits. Shape a Kaomoji that reflects you — not a template everyone shares.',
+    desc: 'Spend Ink to swap symbols in your Kaomoji or add new ones. Replace what you have or stretch the face in new directions.',
     bg: 'cyan' as const,
   },
   {
     num: '03',
-    title: 'Collective Unlocks',
+    title: 'Rising Cost',
     kao: '٩(◕‿◕)۶',
-    desc: 'Every burn advances the whole ecosystem. Global milestones open personalization, AI companion, and physical device stages.',
+    desc: 'Each new symbol costs more than the last. The fuller your Kaomoji grows, the more Ink the next addition demands.',
     bg: 'pink' as const,
-  },
-];
-
-const PHILOSOPHY = [
-  {
-    num: '01',
-    title: 'Digital Pet',
-    desc: 'A next-gen companion — like Tamagotchi, but on-chain. Interact daily and watch your character grow more useful over time.',
-  },
-  {
-    num: '02',
-    title: 'Deflationary Growth',
-    desc: 'Not another JPEG collection. Each burned Kaomoji brings new capabilities closer for every holder in the ecosystem.',
-  },
-  {
-    num: '03',
-    title: 'Beyond the Wallet',
-    desc: 'Collectible NFT, AI assistant, physical device — one character across three worlds. Your digital companion that grows with you.',
   },
 ];
 
@@ -54,18 +34,13 @@ const ROADMAP = [
   { stage: '00', label: 'Waitlist', kao: '( ˘▽˘)っ', live: true, color: 'yellow' as const },
   { stage: '01', label: 'Mint', kao: '(๑•̀ㅂ•́)و✧', color: 'cyan' as const },
   { stage: '02', label: 'Personalization', kao: '(✿╹◡╹)ﾉ', color: 'pink' as const },
-  { stage: '03', label: 'AI Companion', kao: '(｀・ω・´)', color: 'blue' as const },
-  { stage: '04', label: 'Physical Device', kao: '(ﾉ≧∀≦)ﾉ', color: 'green' as const },
+  { stage: '03', kao: '(｀・ω・´)', color: 'blue' as const, masked: true, tease: 'Nice try, sleuth.' },
+  { stage: '04', kao: '(ﾉ≧∀≦)ﾉ', color: 'green' as const, masked: true, tease: 'Ha. Still sealed.' },
 ];
 
 // ─── Animation variants ───────────────────────────────────────────────────
 
 const E = [0.4, 0, 0.2, 1] as [number, number, number, number];
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
-  show:   { opacity: 1, y: 0,  transition: { duration: 0.5, ease: E } },
-};
 
 const fadeLeft = {
   hidden: { opacity: 0, x: -32 },
@@ -94,7 +69,7 @@ export function HomePage() {
     <div className={styles.page}>
       <HeroBanner />
 
-      <motion.div
+      {/* <motion.div
         className={styles.trustStrip}
         variants={fadeUp}
         initial="hidden"
@@ -110,11 +85,11 @@ export function HomePage() {
         <a href={EXTERNAL_LINKS.etherscan} target="_blank" rel="noopener noreferrer">
           Etherscan ↗
         </a>
-      </motion.div>
+      </motion.div> */}
 
-      <section>
+      <section id="mechanics" className={styles.mechanicsSection}>
         <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={IN_VIEW}>
-          <SectionHead title="Mechanics" subtitle="BURN · EARN · MODIFY" />
+          <SectionHead title="Mechanics" subtitle="BURN · INK · EXPAND" />
         </motion.div>
         <motion.div
           className={styles.mechanics}
@@ -125,39 +100,20 @@ export function HomePage() {
         >
           {MECHANICS.map((m) => (
             <motion.div key={m.num} variants={cardVariant}>
-              <Card variant="feat" className={styles[`feat${m.bg}`]}>
-                <div className={styles.featNum}>{m.num}</div>
-                <span className={`kao ${styles.featKao}`}>{m.kao}</span>
-                <h3 className={styles.featTitle}>{m.title}</h3>
+              <Card variant="feat" className={`${styles.featCard} ${styles[`feat${m.bg}`]}`}>
+                <div className={styles.featHead}>
+                  <span className={styles.featNum}>{m.num}</span>
+                  <h3 className={styles.featTitle}>{m.title}</h3>
+                </div>
                 <p className={styles.featDesc}>{m.desc}</p>
+                <span className={`kao ${styles.featKao}`} aria-hidden="true">{m.kao}</span>
               </Card>
             </motion.div>
           ))}
         </motion.div>
       </section>
 
-      <section>
-        <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={IN_VIEW}>
-          <SectionHead title="Philosophy" subtitle="DIGITAL COMPANION · NOT A JPEG" />
-        </motion.div>
-        <motion.div
-          className={styles.philosophy}
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={IN_VIEW}
-        >
-          {PHILOSOPHY.map((p) => (
-            <motion.div key={p.num} variants={cardVariant}>
-              <Card variant="feat">
-                <div className={styles.featNum}>{p.num}</div>
-                <h3 className={styles.featTitle}>{p.title}</h3>
-                <p className={styles.featDesc}>{p.desc}</p>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+      <KaomojiDemoSection />
 
       <section>
         <motion.div variants={fadeLeft} initial="hidden" whileInView="show" viewport={IN_VIEW}>
@@ -174,13 +130,31 @@ export function HomePage() {
             <motion.div
               key={r.stage}
               variants={roadmapVariant}
-              className={`${styles.timeItem} ${styles[`timeColor${r.color}`]} ${r.live ? styles.timeItemLive : ''}`}
+              className={[
+                styles.timeItem,
+                styles[`timeColor${r.color}`],
+                r.live ? styles.timeItemLive : '',
+                r.masked ? styles.timeItemMasked : '',
+              ].filter(Boolean).join(' ')}
             >
               <div className={styles.timeAccent} aria-hidden="true" />
-              <span className={styles.timeStage}>{r.stage}</span>
-              <span className={`kao ${styles.timeKao}`}>{r.kao}</span>
-              <span className={styles.timeLabel}>{r.label}</span>
-              {r.live ? <Badge variant="live" blink /> : <Badge variant="tba" />}
+              {r.masked ? (
+                <>
+                  <span className={styles.timeStage}>{r.stage}</span>
+                  <span className={`kao ${styles.timeKao}`}>{r.kao}</span>
+                  <span className={styles.timeMaskedLabel}>{r.tease}</span>
+                  <span className={styles.timeMaskedBadge}>
+                    <Badge variant="tba" />
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className={styles.timeStage}>{r.stage}</span>
+                  <span className={`kao ${styles.timeKao}`}>{r.kao}</span>
+                  <span className={styles.timeLabel}>{r.label}</span>
+                  {r.live ? <Badge variant="live" blink /> : <Badge variant="tba" />}
+                </>
+              )}
               {i < ROADMAP.length - 1 && (
                 <span className={styles.timeArrow} aria-hidden="true">→</span>
               )}
@@ -189,7 +163,7 @@ export function HomePage() {
         </motion.div>
       </section>
 
-      <motion.section
+      {/* <motion.section
         className={styles.ctaBand}
         variants={fadeUp}
         initial="hidden"
@@ -200,7 +174,7 @@ export function HomePage() {
         <Link to="/studio">
           <Button variant="secondary">Enter Studio →</Button>
         </Link>
-      </motion.section>
+      </motion.section> */}
 
       <div className={`${styles.edgeBand} ${styles.bottom}`} aria-hidden="true" />
     </div>

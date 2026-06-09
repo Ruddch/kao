@@ -1,5 +1,5 @@
 export const EXTERNAL_LINKS = {
-  twitter: 'https://x.com/kaomoji',
+  twitter: 'https://x.com/kaomojinft',
   discord: 'https://discord.gg/kaomoji',
   opensea: 'https://opensea.io/collection/kaomoji',
   etherscan: 'https://etherscan.io',

@@ -1,0 +1,1 @@
+export { RoleSymbolPalette } from './RoleSymbolPalette';

@@ -10,16 +10,7 @@ export interface MintPhase {
 
 export const MINT_PHASES: MintPhase[] = [
   {
-    id: 'waitlist',
-    label: 'Team allocation',
-    status: 'upcoming',
-    startsAt: 'TBA',
-    price: 'TBA',
-    limitPerWallet: 0,
-    description: 'Registered waitlist members get first access.',
-  },
-  {
-    id: 'og',
+    id: 'gtd',
     label: 'GTD',
     status: 'upcoming',
     startsAt: 'TBA',
@@ -28,7 +19,7 @@ export const MINT_PHASES: MintPhase[] = [
     description: 'Holders of partner collections and early supporters.',
   },
   {
-    id: 'og',
+    id: 'fcfs',
     label: 'FCFS',
     status: 'upcoming',
     startsAt: 'TBA',
@@ -49,18 +40,19 @@ export const MINT_PHASES: MintPhase[] = [
 
 // Mock whitelist — addresses eligible per phase
 export const MOCK_WHITELIST: Record<string, string[]> = {
-  waitlist: [
+  gtd: [
     '0x1111111111111111111111111111111111111111',
     '0x2222222222222222222222222222222222222222',
     '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+    '0xBA2037ddD464a70CAadBDC8e1c62Fac6C54f5790'
   ],
-  og: [
+  fcfs: [
     '0x3333333333333333333333333333333333333333',
     '0x4444444444444444444444444444444444444444',
     '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
   ],
-  public: [], // everyone is eligible when live
+  public: [], // everyone is eligible (cascades from checker logic)
 };
 
-export const TOTAL_SUPPLY = 'TBA';
+export const TOTAL_SUPPLY = '10,000';
 export const AVAILABLE = 'TBA';
