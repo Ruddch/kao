@@ -2,6 +2,7 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -36,6 +37,7 @@ const DEFAULT_TEXT = '(◕‿◕)';
 export const KaomojiDemoEditor = forwardRef<KaomojiDemoEditorHandle, KaomojiDemoEditorProps>(
   function KaomojiDemoEditor({ pack, lookup, initialText = DEFAULT_TEXT }, ref) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const pendingSelectionRef = useRef<{ caret: number; focus: boolean } | null>(null);
     const [shake, setShake] = useState(false);
     const [combiningError, setCombiningError] = useState(false);
 
@@ -68,11 +70,24 @@ export const KaomojiDemoEditor = forwardRef<KaomojiDemoEditorHandle, KaomojiDemo
       return () => window.clearTimeout(timer);
     }, [combiningError]);
 
+    useLayoutEffect(() => {
+      const pending = pendingSelectionRef.current;
+      if (!pending) return;
+      pendingSelectionRef.current = null;
+
+      const el = textareaRef.current;
+      if (!el) return;
+
+      if (pending.focus) el.focus();
+      el.setSelectionRange(pending.caret, pending.caret);
+    }, [text]);
+
     const applyParseResult = (nextText: string) => {
       const clamped = clampDocumentText(nextText, KAOMOJI_DEMO_MAX_LENGTH);
       const result = parseText(clamped, pack, lookup);
 
       if (!result.ok) {
+        pendingSelectionRef.current = null;
         setShake(true);
         if (result.error === 'combining_without_base') {
           setCombiningError(true);
@@ -90,16 +105,14 @@ export const KaomojiDemoEditor = forwardRef<KaomojiDemoEditorHandle, KaomojiDemo
         const el = textareaRef.current;
         if (!el) return;
 
+        const wasFocused = document.activeElement === el;
         const start = el.selectionStart;
         const end = el.selectionEnd;
         const nextText = text.slice(0, start) + symbol + text.slice(end);
-        applyParseResult(nextText);
-
         const caret = Math.min(start + [...symbol].length, KAOMOJI_DEMO_MAX_LENGTH);
-        requestAnimationFrame(() => {
-          el.focus();
-          el.setSelectionRange(caret, caret);
-        });
+
+        pendingSelectionRef.current = { caret, focus: !wasFocused };
+        applyParseResult(nextText);
       },
     }));
 

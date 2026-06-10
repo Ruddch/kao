@@ -2,6 +2,7 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -36,6 +37,7 @@ interface KaomojiInlineEditorProps {
 export const KaomojiInlineEditor = forwardRef<KaomojiInlineEditorHandle, KaomojiInlineEditorProps>(
   function KaomojiInlineEditor({ value, onChange, bg = 'yellow' }, ref) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const pendingSelectionRef = useRef<{ caret: number; focus: boolean } | null>(null);
     const [shake, setShake] = useState(false);
     const plateBg = PLATE_CONTRAST[bg];
     const bgCap = capitalizeColorId(bg);
@@ -53,6 +55,18 @@ export const KaomojiInlineEditor = forwardRef<KaomojiInlineEditorHandle, Kaomoji
       const timer = window.setTimeout(() => setShake(false), 360);
       return () => window.clearTimeout(timer);
     }, [shake]);
+
+    useLayoutEffect(() => {
+      const pending = pendingSelectionRef.current;
+      if (!pending) return;
+      pendingSelectionRef.current = null;
+
+      const el = textareaRef.current;
+      if (!el) return;
+
+      if (pending.focus) el.focus();
+      el.setSelectionRange(pending.caret, pending.caret);
+    }, [value]);
 
     const fieldClass = [
       styles.editorField,
@@ -97,16 +111,14 @@ export const KaomojiInlineEditor = forwardRef<KaomojiInlineEditorHandle, Kaomoji
         const el = textareaRef.current;
         if (!el) return;
 
+        const wasFocused = document.activeElement === el;
         const start = el.selectionStart;
         const end = el.selectionEnd;
         const next = clampKaomoji(value.slice(0, start) + symbol + value.slice(end));
-        onChange(next);
-
         const caret = Math.min(start + symbol.length, next.length);
-        requestAnimationFrame(() => {
-          el.focus();
-          el.setSelectionRange(caret, caret);
-        });
+
+        pendingSelectionRef.current = { caret, focus: !wasFocused };
+        onChange(next);
       },
     }));
 

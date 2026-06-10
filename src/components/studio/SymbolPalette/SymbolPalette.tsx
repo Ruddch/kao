@@ -18,6 +18,7 @@ export function SymbolPalette({ onSymbolPick }: SymbolPaletteProps) {
             key={cat.id}
             type="button"
             className={categoryId === cat.id ? styles.tabActive : styles.tab}
+            onPointerDown={(e) => e.preventDefault()}
             onClick={() => setCategoryId(cat.id)}
           >
             {cat.label}
@@ -31,6 +32,7 @@ export function SymbolPalette({ onSymbolPick }: SymbolPaletteProps) {
             type="button"
             className={styles.symbolBtn}
             title={`Insert ${symbol}`}
+            onPointerDown={(e) => e.preventDefault()}
             onClick={() => onSymbolPick(symbol)}
           >
             <span className={`kao ${styles.symbolChar}`}>{symbol}</span>

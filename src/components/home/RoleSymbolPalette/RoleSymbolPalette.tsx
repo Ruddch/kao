@@ -25,6 +25,7 @@ export function RoleSymbolPalette({ categories, onSymbolPick }: RoleSymbolPalett
             type="button"
             className={categoryId === cat.id ? styles.tabActive : styles.tab}
             title={cat.label}
+            onPointerDown={(e) => e.preventDefault()}
             onClick={() => setCategoryId(cat.id)}
           >
             {cat.tabLabel}
@@ -38,6 +39,7 @@ export function RoleSymbolPalette({ categories, onSymbolPick }: RoleSymbolPalett
             type="button"
             className={styles.symbolBtn}
             title={`Insert ${item.char}`}
+            onPointerDown={(e) => e.preventDefault()}
             onClick={() => onSymbolPick(item.char)}
           >
             <span
