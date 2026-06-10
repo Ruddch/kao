@@ -37,6 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: https://ruddch.github.io/kao/
+      url: https://kaomoji.world/
     steps:
       - uses: actions/deploy-pages@v4
