@@ -1,7 +1,6 @@
 .page {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - var(--header-height) - 40px);
 }
 
 /* ─── Art panel ──────────────────────────────────────────────────────────── */
@@ -337,6 +336,20 @@
 }
 
 @media (min-width: 901px) {
+  .artPanel {
+    position: relative;
+    top: auto;
+    height: auto;
+    min-height: min(480px, calc(100dvh - var(--header-height) - 40px));
+  }
+
+  .mintPanel {
+    align-self: start;
+  }
+}
+
+/* Full-height split layout only when there is enough room */
+@media (min-width: 1280px) {
   .page {
     height: calc(100dvh - var(--header-height) - 40px);
     max-height: calc(100dvh - var(--header-height) - 40px);
@@ -344,14 +357,14 @@
   }
 
   .artPanel {
-    position: relative;
-    top: auto;
     height: 100%;
     min-height: 0;
   }
 
   .mintPanel {
-    align-self: start;
+    align-self: stretch;
+    min-height: 0;
+    overflow-y: auto;
   }
 }
 
