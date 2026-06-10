@@ -28,9 +28,18 @@ export interface GlyphLookup {
   by_cp: Record<string, string>;
 }
 
+export interface HexFamilyEntry {
+  id: string;
+  members: string[];
+  size: number;
+}
+
 export interface RoleCategories {
   version: number;
   description?: string;
+  sort?: { algorithm?: string; freq_field?: string };
+  mirror_pairs?: Record<string, string>;
+  hex_to_family?: Record<string, HexFamilyEntry>;
   role_groups: Record<string, string[]>;
   role_labels: Record<string, string>;
 }

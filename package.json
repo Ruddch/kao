@@ -9,7 +9,8 @@
     "build:pages": "tsc -b && vite build --base /kao/ && node scripts/copy-404.mjs",
     "preview": "vite preview",
     "preview:pages": "vite preview --base /kao/",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "sync-glyphs": "cp \"frontend 3/editor_glyph_pack.json\" public/glyphs/ && cp \"frontend 3/editor_lookup.json\" public/glyphs/ && cp \"frontend 3/editor_role_categories.json\" public/glyphs/ && node scripts/generate-glyph-fonts.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",

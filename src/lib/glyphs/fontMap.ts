@@ -1,6 +1,5 @@
 /** Auto-generated from editor_glyph_pack.json — run: node scripts/generate-glyph-fonts.mjs */
 const FONT_MAP: Record<string, string> = {
-  "NotoEmoji": "'Noto Emoji', sans-serif",
   "NotoMusic": "'Noto Music', sans-serif",
   "NotoSans": "'Noto Sans', sans-serif",
   "NotoSansAdlam": "'Noto Sans Adlam', 'Noto Sans', sans-serif",
