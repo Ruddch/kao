@@ -4,7 +4,27 @@ import type {
   PaletteSymbol,
   RoleCategories,
 } from './types';
-import { PALETTE_TOP_N } from './types';
+import {
+  PALETTE_GRID_COLS_MOBILE,
+  PALETTE_TEASER_ROWS,
+  PALETTE_TOP_N,
+} from './types';
+
+export function getTeaserSymbolCount(
+  activeCount: number,
+  columns: number,
+  teaserRows = PALETTE_TEASER_ROWS,
+): number {
+  const padCount = (columns - (activeCount % columns)) % columns;
+  return padCount + teaserRows * columns;
+}
+
+export function getMaxTeaserSymbolCount(
+  activeCount: number,
+  teaserRows = PALETTE_TEASER_ROWS,
+): number {
+  return getTeaserSymbolCount(activeCount, PALETTE_GRID_COLS_MOBILE, teaserRows);
+}
 
 const ROLE_ORDER = [
   'eye',
@@ -91,16 +111,10 @@ export function sortRolePaletteKeys(
   return result.slice(0, topN);
 }
 
-function buildCategorySymbols(
-  keys: string[],
-  roleCategories: RoleCategories,
-  pack: GlyphPack,
-  topN: number,
-): PaletteSymbol[] {
-  const sortedKeys = sortRolePaletteKeys(keys, roleCategories, pack, topN);
+function keysToSymbols(keys: string[], pack: GlyphPack): PaletteSymbol[] {
   const resolved: PaletteSymbol[] = [];
 
-  for (const key of sortedKeys) {
+  for (const key of keys) {
     const glyph = pack.symbols[key];
     if (!glyph) continue;
     resolved.push({ key, char: glyph.char, glyph });
@@ -109,22 +123,52 @@ function buildCategorySymbols(
   return resolved;
 }
 
+function buildCategorySymbols(
+  keys: string[],
+  roleCategories: RoleCategories,
+  pack: GlyphPack,
+  topN: number,
+  maxTeaserCount: number,
+): { symbols: PaletteSymbol[]; teaserSymbols: PaletteSymbol[] } {
+  const sortedKeys = sortRolePaletteKeys(
+    keys,
+    roleCategories,
+    pack,
+    topN + maxTeaserCount,
+  );
+
+  return {
+    symbols: keysToSymbols(sortedKeys.slice(0, topN), pack),
+    teaserSymbols: keysToSymbols(sortedKeys.slice(topN, topN + maxTeaserCount), pack),
+  };
+}
+
 export function buildRolePalette(
   roleCategories: RoleCategories,
   pack: GlyphPack,
   topN = PALETTE_TOP_N,
 ): PaletteCategory[] {
   const categories: PaletteCategory[] = [];
+  const maxTeaserCount = getMaxTeaserSymbolCount(topN);
 
   for (const roleId of ROLE_ORDER) {
     const keys = roleCategories.role_groups[roleId];
     if (!keys?.length) continue;
 
+    const { symbols, teaserSymbols } = buildCategorySymbols(
+      keys,
+      roleCategories,
+      pack,
+      topN,
+      maxTeaserCount,
+    );
+
     categories.push({
       id: roleId,
       label: roleCategories.role_labels[roleId] ?? roleId,
       tabLabel: ROLE_TAB_LABELS[roleId],
-      symbols: buildCategorySymbols(keys, roleCategories, pack, topN),
+      symbols,
+      teaserSymbols,
     });
   }
 

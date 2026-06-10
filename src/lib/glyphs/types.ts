@@ -62,7 +62,11 @@ export interface PaletteCategory {
   label: string;
   tabLabel: string;
   symbols: PaletteSymbol[];
+  teaserSymbols: PaletteSymbol[];
 }
 
 export const KAOMOJI_DEMO_MAX_LENGTH = 20;
 export const PALETTE_TOP_N = 50;
+export const PALETTE_TEASER_ROWS = 2;
+export const PALETTE_GRID_COLS_DESKTOP = 4;
+export const PALETTE_GRID_COLS_MOBILE = 5;

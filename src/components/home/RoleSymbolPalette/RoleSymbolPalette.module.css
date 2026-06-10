@@ -33,13 +33,38 @@
   outline-offset: -1px;
 }
 
+.paletteBody {
+  flex: 1;
+  min-height: 0;
+}
+
+.gridScroll {
+  overflow-y: auto;
+  max-height: 280px;
+  padding-right: 2px;
+}
+
+.gridContent {
+  position: relative;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
-  overflow-y: auto;
-  max-height: 280px;
-  padding-right: 2px;
+}
+
+.gridFade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 88px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in oklch, var(--surface) 55%, transparent) 45%,
+    var(--surface)
+  );
+  pointer-events: none;
 }
 
 .symbolBtn {
@@ -58,6 +83,26 @@
   background: color-mix(in oklch, var(--pop-cyan) 40%, var(--surface));
 }
 
+.symbolBtn:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.teaserLight {
+  filter: blur(2px);
+  opacity: 0.75;
+}
+
+.teaserMid {
+  filter: blur(3px);
+  opacity: 0.55;
+}
+
+.teaserDeep {
+  filter: blur(5px);
+  opacity: 0.35;
+}
+
 .symbolChar {
   font-size: 24px;
   font-weight: 700;
@@ -67,8 +112,15 @@
 }
 
 @media (max-width: 767px) {
+  .gridScroll {
+    max-height: 220px;
+  }
+
   .grid {
     grid-template-columns: repeat(5, 1fr);
-    max-height: 220px;
+  }
+
+  .gridFade {
+    height: 72px;
   }
 }
