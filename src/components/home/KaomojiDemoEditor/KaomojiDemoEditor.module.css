@@ -52,6 +52,11 @@
   color: var(--fg);
 }
 
+/* Each char is its own span; nowrap collapses a lone space to zero width. */
+.highlight span {
+  white-space: pre;
+}
+
 .editorFieldShake {
   animation: editorShake 0.35s ease;
 }

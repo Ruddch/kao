@@ -66,6 +66,11 @@
   color: var(--fg);
 }
 
+/* Each char is its own span; nowrap collapses a lone space to zero width. */
+.highlight span {
+  white-space: pre;
+}
+
 .highlightLight {
   color: var(--surface);
 }
