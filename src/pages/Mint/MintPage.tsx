@@ -1,38 +1,17 @@
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useAccount } from 'wagmi';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { MintGrid } from '../../components/mint/MintGrid';
+import { checkWallet, isEthAddress, type PhaseEligibility } from '../../lib/checkWallet';
 import {
   MINT_PHASES,
-  MOCK_WHITELIST,
   TOTAL_SUPPLY,
   type MintPhase,
 } from '../../data/mock/mintPhases';
 import styles from './MintPage.module.css';
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function normalizeAddr(addr: string) {
-  return addr.trim().toLowerCase();
-}
-
-function checkEligibility(addr: string): Record<string, boolean> {
-  const norm = normalizeAddr(addr);
-  const onGtd = (MOCK_WHITELIST.gtd ?? []).map(normalizeAddr).includes(norm);
-  const onFcfs = (MOCK_WHITELIST.fcfs ?? []).map(normalizeAddr).includes(norm);
-
-  return {
-    gtd: onGtd,
-    fcfs: onGtd || onFcfs,
-    public: true,
-  };
-}
-
-function isEthAddress(v: string) {
-  return /^0x[0-9a-fA-F]{40}$/.test(v.trim());
-}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -91,32 +70,59 @@ const STAGGER = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
 
+const CHECK_ERRORS: Record<string, string> = {
+  invalid_address: 'Enter a valid Ethereum address (0x...)',
+  unavailable: 'Checker is temporarily unavailable. Please try again later.',
+};
+
 export function MintPage() {
   const { address, isConnected } = useAccount();
   const [inputAddr, setInputAddr] = useState('');
-  const [checked, setChecked] = useState<Record<string, boolean> | null>(null);
+  const [checked, setChecked] = useState<PhaseEligibility | null>(null);
   const [error, setError] = useState('');
 
   const activePhase = MINT_PHASES.find((p) => p.status === 'live') ?? null;
 
-  const handleCheck = () => {
-    const val = inputAddr.trim() || (address ?? '');
+  const checkMutation = useMutation({
+    mutationFn: checkWallet,
+    onSuccess: (result) => {
+      if ('error' in result) {
+        setChecked(null);
+        setError(CHECK_ERRORS[result.error] ?? 'Could not check eligibility.');
+        return;
+      }
+      setError('');
+      setChecked(result);
+    },
+    onError: () => {
+      setChecked(null);
+      setError('Could not check eligibility. Please try again.');
+    },
+  });
+
+  const runCheck = (addr: string) => {
+    const val = addr.trim();
     if (!isEthAddress(val)) {
-      setError('Enter a valid Ethereum address (0x...)');
+      setError(CHECK_ERRORS.invalid_address);
       setChecked(null);
       return;
     }
     setError('');
-    setChecked(checkEligibility(val));
+    checkMutation.mutate(val);
+  };
+
+  const handleCheck = () => {
+    runCheck(inputAddr.trim() || (address ?? ''));
   };
 
   const handleUseConnected = () => {
     if (address) {
       setInputAddr(address);
-      setChecked(checkEligibility(address));
-      setError('');
+      runCheck(address);
     }
   };
+
+  const isChecking = checkMutation.isPending;
 
   return (
     <div className={styles.page}>
@@ -185,12 +191,20 @@ export function MintPage() {
               placeholder="0x... wallet address"
               value={inputAddr}
               onChange={(e) => { setInputAddr(e.target.value); setChecked(null); setError(''); }}
-              onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
+              onKeyDown={(e) => e.key === 'Enter' && !isChecking && handleCheck()}
+              disabled={isChecking}
             />
-            <Button onClick={handleCheck}>Check</Button>
+            <Button onClick={handleCheck} disabled={isChecking}>
+              {isChecking ? 'Checking…' : 'Check'}
+            </Button>
           </div>
           {isConnected && address && (
-            <button type="button" className={styles.useConnected} onClick={handleUseConnected}>
+            <button
+              type="button"
+              className={styles.useConnected}
+              onClick={handleUseConnected}
+              disabled={isChecking}
+            >
               Use connected wallet ({address.slice(0, 6)}…{address.slice(-4)})
             </button>
           )}
@@ -206,7 +220,7 @@ export function MintPage() {
                 key={phase.id}
                 phase={phase}
                 active={phase.status === 'live'}
-                eligible={checked ? (checked[phase.id] ?? false) : null}
+                eligible={checked ? (checked[phase.id as keyof PhaseEligibility] ?? false) : null}
               />
             ))}
           </div>
