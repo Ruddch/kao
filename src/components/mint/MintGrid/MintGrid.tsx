@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { setKaomojiTextContent } from '../../../lib/glyphs/kaoCharFont';
 import { KAOMOJI_POOL } from '../../../data/mock/nfts';
 import styles from './MintGrid.module.css';
 
@@ -38,7 +39,7 @@ function makeLayer(kao: string, lCls: string, tCls: string): HTMLDivElement {
   d.className = lCls;
   const s = document.createElement('span');
   s.className = tCls;
-  s.textContent = kao;
+  setKaomojiTextContent(s, kao);
   d.appendChild(s);
   return d;
 }

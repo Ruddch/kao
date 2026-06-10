@@ -1,0 +1,1 @@
+export { KaomojiText } from './KaomojiText';

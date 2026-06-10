@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { KaomojiText } from '../../kaomoji/KaomojiText';
 import { KAOMOJI_POOL } from '../../../data/mock/nfts';
 import styles from './HeroKaomoji.module.css';
 
@@ -45,7 +46,7 @@ export function HeroKaomoji() {
               className={`kao ${styles.kao} ${isCurrent ? styles.kaoEnter : styles.kaoExit}`}
               aria-hidden={!isCurrent}
             >
-              {layer.kao}
+              <KaomojiText text={layer.kao} />
             </p>
           );
         })}
