@@ -1,10 +1,15 @@
 import type { GlyphLookup, GlyphPack, RoleCategories } from './types';
+import { GLYPH_ASSET_VERSION } from './glyphAssetVersion';
 
 const GLYPHS_BASE = `${import.meta.env.BASE_URL}glyphs`.replace(/\/?$/, '');
 
 let packPromise: Promise<GlyphPack> | null = null;
 let lookupPromise: Promise<GlyphLookup> | null = null;
 let roleCategoriesPromise: Promise<RoleCategories> | null = null;
+
+function glyphUrl(filename: string): string {
+  return `${GLYPHS_BASE}/${filename}?v=${GLYPH_ASSET_VERSION}`;
+}
 
 async function fetchJson<T>(path: string): Promise<T> {
   const res = await fetch(path);
@@ -16,14 +21,14 @@ async function fetchJson<T>(path: string): Promise<T> {
 
 export function loadGlyphPack(): Promise<GlyphPack> {
   if (!packPromise) {
-    packPromise = fetchJson<GlyphPack>(`${GLYPHS_BASE}/editor_glyph_pack.json`);
+    packPromise = fetchJson<GlyphPack>(glyphUrl('editor_glyph_pack.json'));
   }
   return packPromise;
 }
 
 export function loadGlyphLookup(): Promise<GlyphLookup> {
   if (!lookupPromise) {
-    lookupPromise = fetchJson<GlyphLookup>(`${GLYPHS_BASE}/editor_lookup.json`);
+    lookupPromise = fetchJson<GlyphLookup>(glyphUrl('editor_lookup.json'));
   }
   return lookupPromise;
 }
@@ -31,7 +36,7 @@ export function loadGlyphLookup(): Promise<GlyphLookup> {
 export function loadRoleCategories(): Promise<RoleCategories> {
   if (!roleCategoriesPromise) {
     roleCategoriesPromise = fetchJson<RoleCategories>(
-      `${GLYPHS_BASE}/editor_role_categories.json`,
+      glyphUrl('editor_role_categories.json'),
     );
   }
   return roleCategoriesPromise;

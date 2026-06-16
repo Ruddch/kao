@@ -1,11 +1,31 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
+const glyphsDir = path.join(root, 'public/glyphs');
+const glyphJsonFiles = [
+  'editor_glyph_pack.json',
+  'editor_lookup.json',
+  'editor_role_categories.json',
+];
+
+const assetHash = crypto.createHash('sha256');
+for (const file of glyphJsonFiles) {
+  assetHash.update(fs.readFileSync(path.join(glyphsDir, file)));
+}
+const GLYPH_ASSET_VERSION = assetHash.digest('hex').slice(0, 12);
+
+const glyphAssetVersionTs = `/** Auto-generated — run: npm run sync-glyphs */
+export const GLYPH_ASSET_VERSION = '${GLYPH_ASSET_VERSION}';
+`;
+
+fs.writeFileSync(path.join(root, 'src/lib/glyphs/glyphAssetVersion.ts'), glyphAssetVersionTs);
+
 const pack = JSON.parse(
-  fs.readFileSync(path.join(root, 'public/glyphs/editor_glyph_pack.json'), 'utf8'),
+  fs.readFileSync(path.join(glyphsDir, 'editor_glyph_pack.json'), 'utf8'),
 );
 
 const fonts = [...new Set(Object.values(pack.symbols).map((s) => s.font_used))].sort();
@@ -107,4 +127,4 @@ fs.writeFileSync(path.join(root, 'src/lib/glyphs/fontMap.ts'), fontMapTs);
 fs.mkdirSync(path.join(root, 'public/fonts'), { recursive: true });
 fs.writeFileSync(path.join(root, 'public/fonts/glyph-fonts.css'), css);
 
-console.log(`Generated ${fonts.length} font mappings, ${gfFamilies.length} Google Font families in ${chunks.length} chunks.`);
+console.log(`Generated glyph asset version ${GLYPH_ASSET_VERSION}, ${fonts.length} font mappings, ${gfFamilies.length} Google Font families in ${chunks.length} chunks.`);

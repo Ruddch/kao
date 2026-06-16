@@ -25,39 +25,30 @@ export function parseText(
   const unsupported: string[] = [];
 
   for (const ch of [...text]) {
-    if (ch === ' ') {
-      const key = lookup.by_char[' '];
-      if (!key) {
-        unsupported.push(' ');
+    const key = lookup.by_char[ch];
+
+    if (key) {
+      const sym = pack.symbols[key];
+      if (!sym) {
+        unsupported.push(ch);
         continue;
       }
-      clusters.push({ base: key, marks: [] });
+
+      if (sym.glyph_type === 'base') {
+        clusters.push({ base: key, marks: [] });
+      } else {
+        if (clusters.length === 0) {
+          return { ok: false, error: 'combining_without_base', char: ch };
+        }
+        clusters[clusters.length - 1].marks.push(key);
+      }
       continue;
     }
 
+    if (isIgnorableService(ch)) continue;
     if (ch.trim() === '') continue;
 
-    const key = lookup.by_char[ch];
-    if (!key) {
-      if (isIgnorableService(ch)) continue;
-      unsupported.push(ch);
-      continue;
-    }
-
-    const sym = pack.symbols[key];
-    if (!sym) {
-      unsupported.push(ch);
-      continue;
-    }
-
-    if (sym.glyph_type === 'base') {
-      clusters.push({ base: key, marks: [] });
-    } else {
-      if (clusters.length === 0) {
-        return { ok: false, error: 'combining_without_base', char: ch };
-      }
-      clusters[clusters.length - 1].marks.push(key);
-    }
+    unsupported.push(ch);
   }
 
   if (unsupported.length > 0) {
