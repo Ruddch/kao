@@ -18,12 +18,16 @@ import {
   type GlyphLookup,
   type GlyphPack,
 } from '../../../lib/glyphs';
+import { Button } from '../../ui/Button';
+import { KaomojiShareModal } from '../KaomojiShareModal';
 import styles from './KaomojiDemoEditor.module.css';
 
 export interface KaomojiDemoEditorHandle {
   focus: () => void;
   insertAtCaret: (symbol: string) => void;
   getCaret: () => number;
+  getText: () => string;
+  isEmpty: () => boolean;
 }
 
 interface KaomojiDemoEditorProps {
@@ -40,6 +44,7 @@ export const KaomojiDemoEditor = forwardRef<KaomojiDemoEditorHandle, KaomojiDemo
     const pendingSelectionRef = useRef<{ caret: number; focus: boolean } | null>(null);
     const [shake, setShake] = useState(false);
     const [combiningError, setCombiningError] = useState(false);
+    const [shareOpen, setShareOpen] = useState(false);
 
     const initialParse = useMemo(
       () => parseText(initialText, pack, lookup),
@@ -101,6 +106,8 @@ export const KaomojiDemoEditor = forwardRef<KaomojiDemoEditorHandle, KaomojiDemo
     useImperativeHandle(ref, () => ({
       focus: () => textareaRef.current?.focus(),
       getCaret: () => textareaRef.current?.selectionStart ?? text.length,
+      getText: () => text,
+      isEmpty: () => !text.trim(),
       insertAtCaret: (symbol: string) => {
         const el = textareaRef.current;
         if (!el) return;
@@ -153,11 +160,28 @@ export const KaomojiDemoEditor = forwardRef<KaomojiDemoEditorHandle, KaomojiDemo
             </div>
           </div>
         </div>
-        <p className={styles.hint}>
-          {combiningError
-            ? 'Add a base symbol before combining marks'
-            : `Click to edit · ${charCount}/${KAOMOJI_DEMO_MAX_LENGTH} chars`}
-        </p>
+        <div className={styles.footer}>
+          <p className={styles.hint}>
+            {combiningError
+              ? 'Add a base symbol before combining marks'
+              : `Click to edit · ${charCount}/${KAOMOJI_DEMO_MAX_LENGTH} chars`}
+          </p>
+          <Button
+            variant="secondary"
+            className={styles.shareButton}
+            onClick={() => setShareOpen(true)}
+            disabled={!text.trim()}
+          >
+            Share
+          </Button>
+        </div>
+        <KaomojiShareModal
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          text={text}
+          pack={pack}
+          lookup={lookup}
+        />
       </div>
     );
   },

@@ -1,0 +1,86 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.previewWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pop-yellow);
+  border: 2px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.previewPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.loadingText {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+}
+
+.errorText {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--pop-red);
+  text-align: center;
+  padding: var(--gap-md);
+}
+
+.feedback {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--pop-green);
+  text-align: center;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-xs);
+}
+
+.xButton {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.xIcon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+@media (max-width: 767px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  .xButton {
+    grid-column: auto;
+  }
+}
