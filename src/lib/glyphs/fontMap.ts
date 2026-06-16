@@ -98,6 +98,7 @@ const FONT_MAP: Record<string, string> = {
   "NotoSansYi": "'Noto Sans Yi', 'Noto Sans', sans-serif",
   "NotoSerifTibetan": "'Noto Serif Tibetan', 'Noto Serif', serif",
   "custom_scan_lines": "var(--font-kao)",
+  "editor_ideo_space": "var(--font-kao)",
   "editor_space": "inherit",
 };
 

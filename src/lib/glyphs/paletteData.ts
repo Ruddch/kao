@@ -26,89 +26,22 @@ export function getMaxTeaserSymbolCount(
   return getTeaserSymbolCount(activeCount, PALETTE_GRID_COLS_MOBILE, teaserRows);
 }
 
-const ROLE_ORDER = [
-  'eye',
-  'mouth',
-  'hands',
-  'frame',
-  'decor',
-  'combining',
-  'other',
-] as const;
+const TRAILING_TAB_ROLES = ['combining', 'layout'] as const;
 
-const ROLE_TAB_LABELS: Record<(typeof ROLE_ORDER)[number], string> = {
-  eye: 'Eyes',
-  mouth: 'Mouth',
-  hands: 'Hands',
-  frame: 'Frame',
-  decor: 'Decor',
-  combining: 'Overlays',
-  other: 'Other',
-};
-
-function glyphFreq(pack: GlyphPack, key: string): number {
-  return pack.symbols[key]?.corpus_freq ?? 0;
+function reorderPaletteTabs(roleOrder: string[]): string[] {
+  const trailing = TRAILING_TAB_ROLES.filter((role) => roleOrder.includes(role));
+  const leading = roleOrder.filter(
+    (role) => !(TRAILING_TAB_ROLES as readonly string[]).includes(role),
+  );
+  return [...leading, ...trailing];
 }
 
-function getMirrorPartner(
-  anchor: string,
-  mirror: Record<string, string>,
-): string | null {
-  if (mirror[anchor]) return mirror[anchor];
-  for (const [a, b] of Object.entries(mirror)) {
-    if (b === anchor) return a;
+function roleTabLabel(roleId: string, roleLabels: Record<string, string>): string {
+  const full = roleLabels[roleId];
+  if (full) {
+    return full.split(/[\s(]/)[0] ?? roleId;
   }
-  return null;
-}
-
-export function sortRolePaletteKeys(
-  keys: string[],
-  roleCategories: RoleCategories,
-  pack: GlyphPack,
-  topN = PALETTE_TOP_N,
-): string[] {
-  const roleSet = new Set(keys);
-  const mirror = roleCategories.mirror_pairs ?? {};
-  const hexToFamily = roleCategories.hex_to_family ?? {};
-  const shown = new Set<string>();
-  const result: string[] = [];
-
-  const familyMembers = (anchor: string): string[] => {
-    const entry = hexToFamily[anchor];
-    if (!entry?.members) return [];
-    return [...entry.members]
-      .filter((key) => {
-        if (!roleSet.has(key) || shown.has(key) || key === anchor) return false;
-        const partner = getMirrorPartner(key, mirror);
-        if (partner && shown.has(partner)) return false;
-        return true;
-      })
-      .sort((a, b) => glyphFreq(pack, b) - glyphFreq(pack, a));
-  };
-
-  while (result.length < topN) {
-    const candidates = keys
-      .filter((key) => !shown.has(key))
-      .sort((a, b) => glyphFreq(pack, b) - glyphFreq(pack, a));
-    if (candidates.length === 0) break;
-
-    const anchor = candidates[0];
-    result.push(anchor);
-    shown.add(anchor);
-
-    const partner = getMirrorPartner(anchor, mirror);
-    if (partner && roleSet.has(partner) && !shown.has(partner)) {
-      result.push(partner);
-      shown.add(partner);
-    }
-
-    for (const member of familyMembers(anchor)) {
-      result.push(member);
-      shown.add(member);
-    }
-  }
-
-  return result.slice(0, topN);
+  return roleId.charAt(0).toUpperCase() + roleId.slice(1);
 }
 
 function keysToSymbols(keys: string[], pack: GlyphPack): PaletteSymbol[] {
@@ -125,21 +58,15 @@ function keysToSymbols(keys: string[], pack: GlyphPack): PaletteSymbol[] {
 
 function buildCategorySymbols(
   keys: string[],
-  roleCategories: RoleCategories,
   pack: GlyphPack,
   topN: number,
   maxTeaserCount: number,
 ): { symbols: PaletteSymbol[]; teaserSymbols: PaletteSymbol[] } {
-  const sortedKeys = sortRolePaletteKeys(
-    keys,
-    roleCategories,
-    pack,
-    topN + maxTeaserCount,
-  );
+  const visibleCount = topN + maxTeaserCount;
 
   return {
-    symbols: keysToSymbols(sortedKeys.slice(0, topN), pack),
-    teaserSymbols: keysToSymbols(sortedKeys.slice(topN, topN + maxTeaserCount), pack),
+    symbols: keysToSymbols(keys.slice(0, topN), pack),
+    teaserSymbols: keysToSymbols(keys.slice(topN, visibleCount), pack),
   };
 }
 
@@ -150,14 +77,16 @@ export function buildRolePalette(
 ): PaletteCategory[] {
   const categories: PaletteCategory[] = [];
   const maxTeaserCount = getMaxTeaserSymbolCount(topN);
+  const roleOrder = reorderPaletteTabs(
+    roleCategories.role_order ?? Object.keys(roleCategories.role_groups),
+  );
 
-  for (const roleId of ROLE_ORDER) {
+  for (const roleId of roleOrder) {
     const keys = roleCategories.role_groups[roleId];
     if (!keys?.length) continue;
 
     const { symbols, teaserSymbols } = buildCategorySymbols(
       keys,
-      roleCategories,
       pack,
       topN,
       maxTeaserCount,
@@ -166,7 +95,7 @@ export function buildRolePalette(
     categories.push({
       id: roleId,
       label: roleCategories.role_labels[roleId] ?? roleId,
-      tabLabel: ROLE_TAB_LABELS[roleId],
+      tabLabel: roleTabLabel(roleId, roleCategories.role_labels),
       symbols,
       teaserSymbols,
     });

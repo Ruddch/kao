@@ -4,6 +4,7 @@ export type CombiningClass = 'above' | 'below' | 'overlay' | 'unknown';
 export interface GlyphSymbol {
   char: string;
   cp: number;
+  name?: string;
   glyph_type: GlyphType;
   path: string;
   advance: number;
@@ -37,11 +38,16 @@ export interface HexFamilyEntry {
 export interface RoleCategories {
   version: number;
   description?: string;
-  sort?: { algorithm?: string; freq_field?: string };
-  mirror_pairs?: Record<string, string>;
-  hex_to_family?: Record<string, HexFamilyEntry>;
+  role_order: string[];
   role_groups: Record<string, string[]>;
   role_labels: Record<string, string>;
+  counts?: Record<string, number>;
+  /** @deprecated v2 — sort is baked into role_groups in v3 */
+  sort?: { algorithm?: string; freq_field?: string };
+  /** @deprecated v2 */
+  mirror_pairs?: Record<string, string>;
+  /** @deprecated v2 */
+  hex_to_family?: Record<string, HexFamilyEntry>;
 }
 
 export interface Cluster {
@@ -66,7 +72,7 @@ export interface PaletteCategory {
 }
 
 export const KAOMOJI_DEMO_MAX_LENGTH = 20;
-export const PALETTE_TOP_N = 50;
+export const PALETTE_TOP_N = 100;
 export const PALETTE_TEASER_ROWS = 2;
 export const PALETTE_GRID_COLS_DESKTOP = 4;
 export const PALETTE_GRID_COLS_MOBILE = 5;

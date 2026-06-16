@@ -62,7 +62,7 @@ function SymbolCell({
     <button
       type="button"
       className={[styles.symbolBtn, className].filter(Boolean).join(' ')}
-      title={disabled ? undefined : `Insert ${item.char}`}
+      title={disabled ? undefined : (item.glyph.name ?? item.char)}
       disabled={disabled}
       tabIndex={disabled ? -1 : undefined}
       aria-hidden={disabled ? true : undefined}
