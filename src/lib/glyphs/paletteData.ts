@@ -4,27 +4,6 @@ import type {
   PaletteSymbol,
   RoleCategories,
 } from './types';
-import {
-  PALETTE_GRID_COLS_MOBILE,
-  PALETTE_TEASER_ROWS,
-  PALETTE_TOP_N,
-} from './types';
-
-export function getTeaserSymbolCount(
-  activeCount: number,
-  columns: number,
-  teaserRows = PALETTE_TEASER_ROWS,
-): number {
-  const padCount = (columns - (activeCount % columns)) % columns;
-  return padCount + teaserRows * columns;
-}
-
-export function getMaxTeaserSymbolCount(
-  activeCount: number,
-  teaserRows = PALETTE_TEASER_ROWS,
-): number {
-  return getTeaserSymbolCount(activeCount, PALETTE_GRID_COLS_MOBILE, teaserRows);
-}
 
 const TRAILING_TAB_ROLES = ['combining', 'layout'] as const;
 
@@ -56,27 +35,11 @@ function keysToSymbols(keys: string[], pack: GlyphPack): PaletteSymbol[] {
   return resolved;
 }
 
-function buildCategorySymbols(
-  keys: string[],
-  pack: GlyphPack,
-  topN: number,
-  maxTeaserCount: number,
-): { symbols: PaletteSymbol[]; teaserSymbols: PaletteSymbol[] } {
-  const visibleCount = topN + maxTeaserCount;
-
-  return {
-    symbols: keysToSymbols(keys.slice(0, topN), pack),
-    teaserSymbols: keysToSymbols(keys.slice(topN, visibleCount), pack),
-  };
-}
-
 export function buildRolePalette(
   roleCategories: RoleCategories,
   pack: GlyphPack,
-  topN = PALETTE_TOP_N,
 ): PaletteCategory[] {
   const categories: PaletteCategory[] = [];
-  const maxTeaserCount = getMaxTeaserSymbolCount(topN);
   const roleOrder = reorderPaletteTabs(
     roleCategories.role_order ?? Object.keys(roleCategories.role_groups),
   );
@@ -85,19 +48,11 @@ export function buildRolePalette(
     const keys = roleCategories.role_groups[roleId];
     if (!keys?.length) continue;
 
-    const { symbols, teaserSymbols } = buildCategorySymbols(
-      keys,
-      pack,
-      topN,
-      maxTeaserCount,
-    );
-
     categories.push({
       id: roleId,
       label: roleCategories.role_labels[roleId] ?? roleId,
       tabLabel: roleTabLabel(roleId, roleCategories.role_labels),
-      symbols,
-      teaserSymbols,
+      symbols: keysToSymbols(keys, pack),
     });
   }
 
