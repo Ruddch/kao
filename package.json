@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "preview:pages": "vite preview",
     "lint": "eslint .",
-    "sync-glyphs": "cp \"frontend 3/editor_glyph_pack.json\" public/glyphs/ && cp \"frontend 3/editor_lookup.json\" public/glyphs/ && cp \"frontend 3/editor_role_categories.json\" public/glyphs/ && node scripts/generate-glyph-fonts.mjs"
+    "sync-glyphs": "cp data/editor_glyph_pack.json public/glyphs/ && cp data/editor_lookup.json public/glyphs/ && cp data/editor_role_categories.json public/glyphs/ && node scripts/generate-glyph-fonts.mjs",
+    "build:onchain": "node scripts/build-onchain-index.mjs",
+    "test:onchain": "node scripts/test-onchain-parity.mjs && node scripts/test-slot-animation.mjs",
+    "prebuild": "node scripts/build-onchain-index.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",

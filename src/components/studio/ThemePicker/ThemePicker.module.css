@@ -1,0 +1,19 @@
+.root {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+  cursor: pointer;
+  padding: 0;
+}
+
+.swatchActive {
+  outline: 3px solid var(--fg);
+  outline-offset: 2px;
+}

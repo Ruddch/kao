@@ -7,3 +7,4 @@ export * from './measureText';
 export * from './fontMap';
 export * from './glyphForChar';
 export * from './paletteData';
+export * from './slotAnimation';

@@ -1,0 +1,43 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: 8px 12px;
+  border: 2px solid var(--fg);
+  background: var(--pop-cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-bottom: var(--gap-sm);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.pending {
+  background: var(--pop-yellow);
+}
+
+.success {
+  background: var(--pop-green);
+}
+
+.error {
+  background: var(--pop-red);
+  color: var(--bg);
+}
+
+.message {
+  flex: 1;
+}
+
+.link {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.dismiss {
+  border: none;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}

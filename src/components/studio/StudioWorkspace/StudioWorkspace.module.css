@@ -1,0 +1,239 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 1040px;
+  margin: 0 auto;
+  width: 100%;
+  padding-bottom: var(--gap-lg);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+  gap: var(--gap-md);
+  align-items: start;
+}
+
+.previewCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  position: sticky;
+  top: 0;
+}
+
+.previewLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toolsCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.paletteLoading {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.actionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  padding: var(--gap-sm);
+  border: 2px solid var(--fg);
+  background: var(--bg);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.actionReason {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.stats {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.modeSwitch {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  border: 2px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.modeBtn {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border: none;
+  background: var(--surface);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.modeBtn + .modeBtn {
+  border-left: 2px solid var(--fg);
+}
+
+.modeBtnActive {
+  background: var(--pop-cyan);
+}
+
+.modeBtn:focus-visible {
+  outline: 3px solid var(--fg);
+  outline-offset: -3px;
+}
+
+.animToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  justify-content: center;
+}
+
+.animBtn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border: 2px solid var(--fg);
+  background: var(--surface);
+  cursor: pointer;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.animBtn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-hard-md);
+}
+
+.animBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.animHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0;
+}
+
+.animSteps {
+  margin: 0;
+  padding: var(--gap-xs) var(--gap-sm);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--muted);
+  border: 2px dashed var(--fg);
+  background: var(--bg);
+}
+
+.animSteps li {
+  padding-left: 0;
+}
+
+.animStepActive {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.animStepDone {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.slotPanel {
+  padding: var(--gap-xs) var(--gap-sm);
+  border: 2px solid var(--fg);
+  background: var(--pop-yellow);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.slotPanelLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.slotPanelFrames {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.animLimitHint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--pop-red, #c00);
+  text-align: center;
+}
+
+.blockPickAlt {
+  outline: 3px solid var(--fg);
+  outline-offset: 2px;
+  background: color-mix(in srgb, var(--pop-cyan) 25%, var(--surface));
+  border-radius: 2px;
+  padding: var(--gap-xs);
+}
+
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .previewCol {
+    position: static;
+  }
+}

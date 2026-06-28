@@ -1,0 +1,162 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-xs);
+  width: 100%;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.stageCompact {
+  max-width: 300px;
+}
+
+.canvas {
+  position: relative;
+  width: min(100%, var(--display-canvas, 360px));
+  aspect-ratio: 1;
+  background: var(--theme-bg, var(--pop-cyan));
+  cursor: text;
+}
+
+.shadow {
+  position: absolute;
+  background: var(--shadow-fill, #000);
+}
+
+.card {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  background: var(--card-fill, #fff);
+  border-style: solid;
+  border-color: var(--card-stroke, #000);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.editorField {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+}
+
+.editorFieldShake {
+  animation: editorShake 0.35s ease;
+}
+
+.editorText {
+  grid-area: 1 / 1;
+  font-family: var(--font-kao);
+  font-size: var(--text-size, 48px);
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--glyph-fill, var(--fg));
+}
+
+.highlight {
+  pointer-events: none;
+}
+
+.highlightInteractive {
+  pointer-events: auto;
+}
+
+.canvasAnimate {
+  cursor: default;
+}
+
+.editorInputHidden {
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.highlight span {
+  white-space: pre;
+}
+
+.editorInput {
+  grid-area: 1 / 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 1em;
+  font-weight: 400;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  resize: none;
+  field-sizing: content;
+  overflow: hidden;
+  color: transparent;
+  caret-color: var(--glyph-fill, var(--fg));
+  cursor: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.emptyHint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gap-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+
+@keyframes editorShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-5px);
+  }
+
+  40% {
+    transform: translateX(5px);
+  }
+
+  60% {
+    transform: translateX(-3px);
+  }
+
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorFieldShake {
+    animation: none;
+  }
+}

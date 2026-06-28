@@ -52,7 +52,11 @@ export interface RoleCategories {
 
 export interface Cluster {
   base: string;
+  /** frameB hex key — alternate glyph for animation */
+  baseAlt?: string;
   marks: string[];
+  /** parallel to marks[] — frameB for each mark slot */
+  markAlts?: (string | undefined)[];
 }
 
 export type Document = Cluster[];

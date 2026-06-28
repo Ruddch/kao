@@ -1,8 +1,9 @@
-import { createConfig, http, injected } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
+import { createConfig, injected } from 'wagmi';
+import { base } from 'wagmi/chains';
+import { baseHttpTransport } from './onchain/baseRpc';
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet],
-  transports: { [mainnet.id]: http() },
+  chains: [base],
+  transports: { [base.id]: baseHttpTransport },
   connectors: [injected()],
 });

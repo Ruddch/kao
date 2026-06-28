@@ -1,6 +1,8 @@
 import { clustersToText } from './clustersToText';
 import type { Document, GlyphLookup, GlyphPack } from './types';
 
+export const MAX_MARKS_PER_CLUSTER = 4;
+
 function isIgnorableService(ch: string): boolean {
   const cp = ch.codePointAt(0);
   if (cp === undefined) return true;
@@ -14,7 +16,8 @@ function isIgnorableService(ch: string): boolean {
 export type ParseResult =
   | { ok: true; clusters: Document }
   | { ok: false; error: 'unsupported_symbols'; unsupported: string[] }
-  | { ok: false; error: 'combining_without_base'; char: string };
+  | { ok: false; error: 'combining_without_base'; char: string }
+  | { ok: false; error: 'too_many_marks'; clusterIndex: number };
 
 export function parseText(
   text: string,
@@ -40,7 +43,11 @@ export function parseText(
         if (clusters.length === 0) {
           return { ok: false, error: 'combining_without_base', char: ch };
         }
-        clusters[clusters.length - 1].marks.push(key);
+        const cluster = clusters[clusters.length - 1];
+        if (cluster.marks.length >= MAX_MARKS_PER_CLUSTER) {
+          return { ok: false, error: 'too_many_marks', clusterIndex: clusters.length - 1 };
+        }
+        cluster.marks.push(key);
       }
       continue;
     }

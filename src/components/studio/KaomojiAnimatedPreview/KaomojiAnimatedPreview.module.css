@@ -1,0 +1,121 @@
+.composeStack {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.composeStack > * {
+  grid-area: 1 / 1;
+}
+
+.glyphRow {
+  font-family: var(--font-kao);
+  font-size: var(--text-size, 48px);
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--glyph-fill, var(--fg));
+}
+
+.faceLayer {
+  pointer-events: none;
+}
+
+.faceLayerA {
+  animation: faceShowA 1.2s linear infinite;
+}
+
+.faceLayerB {
+  animation: faceShowB 1.2s linear infinite;
+}
+
+.hitRow {
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.slot {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
+  vertical-align: baseline;
+}
+
+.slotHit {
+  cursor: pointer;
+  border-radius: 4px;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.slotSelected {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+}
+
+.slotAnimated::after {
+  content: '◌';
+  position: absolute;
+  top: -0.35em;
+  right: -0.15em;
+  font-size: 0.28em;
+  line-height: 1;
+  opacity: 0.85;
+  pointer-events: none;
+  color: var(--fg);
+}
+
+.animFrame {
+  display: inline-block;
+  white-space: pre;
+}
+
+@keyframes faceShowA {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  99% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes faceShowB {
+  0%,
+  49% {
+    opacity: 0;
+  }
+
+  50%,
+  99% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faceLayerA,
+  .faceLayerB {
+    animation: none;
+  }
+
+  .faceLayerB {
+    display: none;
+  }
+}

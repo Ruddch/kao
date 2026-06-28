@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { homeMarqueeConfig, studioMarqueeConfig } from '../../../config/marquee';
+import { homeMarqueeConfig } from '../../../config/marquee';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
 import { MarqueeStrip } from '../MarqueeStrip';
@@ -9,9 +9,7 @@ import styles from './GlobalLayout.module.css';
 export function GlobalLayout() {
   const { pathname } = useLocation();
   const marqueeConfig =
-    pathname === '/' ? homeMarqueeConfig :
-    pathname === '/studio' ? studioMarqueeConfig :
-    { ...homeMarqueeConfig, enabled: false };
+    pathname === '/' ? homeMarqueeConfig : { ...homeMarqueeConfig, enabled: false };
 
   return (
     <div className={styles.layout}>

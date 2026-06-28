@@ -1,0 +1,1 @@
+export { NftInventory } from './NftInventory';

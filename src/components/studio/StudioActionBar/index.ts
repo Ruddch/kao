@@ -1,0 +1,1 @@
+export { StudioActionBar } from './StudioActionBar';
