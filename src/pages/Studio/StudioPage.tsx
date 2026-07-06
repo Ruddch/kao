@@ -306,9 +306,6 @@ export function StudioPage() {
     ? MAX_UNLOCKED_SYMBOLS
     : activeNft?.mintUnlockedSymbols || DEFAULT_MINT_UNLOCKED_SYMBOLS;
 
-  const revealMaxSymbols =
-    activeNft?.mintUnlockedSymbols || DEFAULT_MINT_UNLOCKED_SYMBOLS;
-
   const maxAnimated = activeNft
     ? activeNft.revealed
       ? activeNft.animatedUnlocked
@@ -403,9 +400,9 @@ export function StudioPage() {
   );
 
   const handleReveal = async () => {
-    if (!activeNft || symbolCount === 0) return;
+    if (!activeNft) return;
     lastTxActionRef.current = 'reveal';
-    await reveal(activeNft.tokenId, clusters, themeId, layoutAlign);
+    await reveal(activeNft.tokenId);
   };
 
   const handleEdit = async () => {
@@ -531,26 +528,9 @@ export function StudioPage() {
     }
 
     if (!activeNft.revealed) {
-      let reason: string | undefined;
-      if (symbolCount === 0) reason = 'Add at least one symbol';
-      else if (symbolCount > revealMaxSymbols) {
-        reason = `Too many symbols (${symbolCount}/${revealMaxSymbols})`;
-      } else if (tooManyMarks) {
-        reason = `Max ${MAX_MARKS} combining marks per symbol`;
-      } else if (animatedCount > maxAnimated) {
-        reason = `Too many animated symbols (${animatedCount}/${maxAnimated})`;
-      }
-
       return {
         label: 'Reveal Kaomoji',
-        disabled:
-          isPending ||
-          wrongChain ||
-          symbolCount === 0 ||
-          symbolCount > revealMaxSymbols ||
-          tooManyMarks ||
-          animatedCount > maxAnimated,
-        reason,
+        disabled: isPending || wrongChain,
         onPrimary: handleReveal,
       };
     }
@@ -666,7 +646,6 @@ export function StudioPage() {
         palette={palette}
         onSymbolPick={handleSymbolPick}
         maxSymbols={editorMaxSymbols}
-        symbolCount={symbolCount}
         editCost={editCost}
         editDiff={editDiff}
         compositionChanged={compositionChanged}

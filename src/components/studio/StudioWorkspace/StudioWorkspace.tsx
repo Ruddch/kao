@@ -34,7 +34,6 @@ interface StudioWorkspaceProps {
   palette: PaletteCategory[];
   onSymbolPick: (symbol: string) => void;
   maxSymbols: number;
-  symbolCount: number;
   editCost: number | null;
   editDiff: DiffResult | null;
   compositionChanged: boolean;
@@ -73,7 +72,6 @@ export function StudioWorkspace({
   palette,
   onSymbolPick,
   maxSymbols,
-  symbolCount,
   editCost,
   editDiff,
   compositionChanged,
@@ -99,13 +97,14 @@ export function StudioWorkspace({
   animLimitHint,
 }: StudioWorkspaceProps) {
   const isAnimateMode = studioMode === 'animate';
+  const isRevealed = nft.revealed;
 
   return (
     <div className={styles.root}>
       <div className={styles.body}>
         <div className={styles.previewCol} id="studio-editor-anchor">
           <span className={styles.previewLabel}>Preview</span>
-          {animationEnabled && maxAnimated > 0 && onStudioModeChange && (
+          {isRevealed && animationEnabled && maxAnimated > 0 && onStudioModeChange && (
             <div className={styles.modeSwitch} role="tablist" aria-label="Editor mode">
               <button
                 type="button"
@@ -132,7 +131,7 @@ export function StudioWorkspace({
             </div>
           )}
 
-          {isAnimateMode && (
+          {isRevealed && isAnimateMode && (
             <ol className={styles.animSteps}>
               <li className={selectedSlot !== null ? styles.animStepDone : styles.animStepActive}>
                 1. Click a symbol in the preview
@@ -152,23 +151,41 @@ export function StudioWorkspace({
             </ol>
           )}
 
-          <StudioGlyphEditor
-            ref={editorRef}
-            pack={pack}
-            lookup={lookup}
-            layout={layout}
-            clusters={clusters}
-            onClustersChange={onClustersChange}
-            themeId={themeId}
-            maxSymbols={maxSymbols}
-            emptyHint="Pick symbols →"
-            selectedSlot={selectedSlot}
-            onSlotSelect={onSlotSelect}
-            pickAltMode={pickAltMode}
-            mode={studioMode}
-          />
+          {isRevealed ? (
+            <StudioGlyphEditor
+              ref={editorRef}
+              pack={pack}
+              lookup={lookup}
+              layout={layout}
+              clusters={clusters}
+              onClustersChange={onClustersChange}
+              themeId={themeId}
+              maxSymbols={maxSymbols}
+              emptyHint="Pick symbols →"
+              selectedSlot={selectedSlot}
+              onSlotSelect={onSlotSelect}
+              pickAltMode={pickAltMode}
+              mode={studioMode}
+            />
+          ) : (
+            <div className={styles.unrevealed}>
+              {nft.previewImage ? (
+                <img
+                  src={nft.previewImage}
+                  alt={`Kaomoji #${nft.tokenId} placeholder`}
+                  className={styles.unrevealedImg}
+                />
+              ) : (
+                <p className={styles.unrevealedText}>Unrevealed Kaomoji</p>
+              )}
+              <p className={styles.unrevealedHint}>
+                Reveal assigns a random composition from the on-chain pool. You can edit it
+                afterward.
+              </p>
+            </div>
+          )}
 
-          {isAnimateMode && selectedSlotPreview && (
+          {isRevealed && isAnimateMode && selectedSlotPreview && (
             <div className={styles.slotPanel}>
               <span className={styles.slotPanelLabel}>Selected slot</span>
               <p className={styles.slotPanelFrames}>
@@ -187,7 +204,7 @@ export function StudioWorkspace({
 
           {animLimitHint && <p className={styles.animLimitHint}>{animLimitHint}</p>}
 
-          {isAnimateMode && canRemoveAnimation && (
+          {isRevealed && isAnimateMode && canRemoveAnimation && (
             <div className={styles.animToolbar}>
               <button type="button" className={styles.animBtn} onClick={onRemoveAnimation}>
                 Remove animation from slot
@@ -201,18 +218,19 @@ export function StudioWorkspace({
               {maxAnimated > 0 && ` · ${animatedCount}/${maxAnimated} anim`}
             </p>
           ) : (
-            <p className={styles.stats}>
-              {symbolCount}/{maxSymbols} symbols
-            </p>
+            <p className={styles.stats}>Unrevealed · random composition on reveal</p>
           )}
         </div>
 
         <div className={styles.toolsCol}>
-          <div className={styles.block}>
-            <span className={styles.label}>Background</span>
-            <ThemePicker themes={layout.themes} value={themeId} onChange={onThemeChange} />
-          </div>
+          {isRevealed && (
+            <div className={styles.block}>
+              <span className={styles.label}>Background</span>
+              <ThemePicker themes={layout.themes} value={themeId} onChange={onThemeChange} />
+            </div>
+          )}
 
+          {isRevealed && (
           <div
             className={[styles.block, isAnimateMode && pickAltMode && styles.blockPickAlt]
               .filter(Boolean)
@@ -241,6 +259,7 @@ export function StudioWorkspace({
               <p className={styles.paletteLoading}>Loading symbols…</p>
             )}
           </div>
+          )}
 
           {nft.revealed && (
             <InkPanel

@@ -9,27 +9,25 @@ import { LAYOUT_ALIGN_CENTER } from './compositionCodec';
 import { multicallInChunks, isMulticallSuccess } from './multicallChunks';
 import { buildKaomojiPreviewImages } from './buildKaomojiPreviewImages';
 import {
-  DEFAULT_MINT_UNLOCKED_SYMBOLS,
+  derivedKaomojiFields,
   normalizeKaomojiNft,
   toContractBool,
   toContractNumber,
 } from './normalize';
+import { animatedSlotsUnlocked, levelFromInkReceived } from './inkMath';
 import { parseTokenUriMedia, type TokenUriMedia } from './tokenUri';
 import type { GlyphPack } from '../glyphs/types';
 
 const STATE_READS = [
   'isRevealed',
   'inkOf',
-  'inkReceivedOf',
   'levelOf',
   'unlockedSymbolsOf',
-  'mintUnlockedSymbolsOf',
-  'animatedUnlockedOf',
   'compositionOf',
 ] as const;
 
-/** ~3 NFTs × 8 state fields — keeps multicall calldata under public RPC limits. */
-const STATE_CHUNK_SIZE = STATE_READS.length * 3;
+/** ~4 NFTs × 5 state fields — keeps multicall calldata under public RPC limits. */
+const STATE_CHUNK_SIZE = STATE_READS.length * 4;
 const OWNER_SCAN_CHUNK_SIZE = 16;
 const TOKEN_URI_CHUNK_SIZE = 8;
 const CHUNK_DELAY_MS = 400;
@@ -50,28 +48,23 @@ function parseStateSlice(
   KaomojiNft,
   'tokenId' | 'clusters' | 'themeId' | 'layoutAlign' | 'previewImage' | 'animatedPreviewImage'
 > {
-  const [
-    revealed,
-    ink,
-    inkReceived,
-    level,
-    unlockedSymbols,
-    mintUnlockedSymbols,
-    animatedUnlocked,
-    compositionHex,
-  ] = slice as [boolean, bigint, bigint, number, number, number, number, Hex];
+  const [revealed, ink, level, unlockedSymbols, compositionHex] = slice as [
+    boolean,
+    bigint,
+    number,
+    number,
+    Hex,
+  ];
+
+  const normalizedLevel = toContractNumber(level, 1);
+  const derived = derivedKaomojiFields(normalizedLevel);
 
   return {
     revealed: toContractBool(revealed),
     ink: toContractNumber(ink),
-    inkReceived: toContractNumber(inkReceived),
-    level: toContractNumber(level, 1),
+    level: normalizedLevel,
     unlockedSymbols: toContractNumber(unlockedSymbols),
-    mintUnlockedSymbols: toContractNumber(
-      mintUnlockedSymbols,
-      DEFAULT_MINT_UNLOCKED_SYMBOLS,
-    ),
-    animatedUnlocked: toContractNumber(animatedUnlocked),
+    ...derived,
     composition: parseCompositionHex(compositionHex),
   };
 }
@@ -217,7 +210,8 @@ export async function fetchOwnedKaomojiList(address: Address): Promise<KaomojiNf
   for (let i = 0; i < tokenIds.length; i++) {
     const base = i * STATE_READS.length;
     const revealed = toContractBool(stateResults[base] as boolean);
-    const animatedUnlocked = toContractNumber(stateResults[base + 6] as number);
+    const level = toContractNumber(stateResults[base + 2] as number, 1);
+    const animatedUnlocked = animatedSlotsUnlocked(level);
     if (!revealed || animatedUnlocked > 0) tokenUriIds.push(tokenIds[i]);
   }
 
@@ -304,9 +298,18 @@ export function patchSacrificeResult(
 ): KaomojiNft[] {
   return nfts
     .filter((nft) => nft.tokenId !== burnTokenId)
-    .map((nft) =>
-      nft.tokenId === targetTokenId ? { ...nft, ink: nft.ink + inkReward } : nft,
-    );
+    .map((nft) => {
+      if (nft.tokenId !== targetTokenId) return nft;
+      const inkReceived = nft.inkReceived + inkReward;
+      const level = levelFromInkReceived(inkReceived);
+      return {
+        ...nft,
+        ink: nft.ink + inkReward,
+        inkReceived,
+        level,
+        animatedUnlocked: animatedSlotsUnlocked(level),
+      };
+    });
 }
 
 export async function fetchOwnedTokenIds(address: Address): Promise<string[]> {

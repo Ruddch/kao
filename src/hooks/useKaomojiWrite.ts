@@ -16,6 +16,16 @@ import { formatContractError } from '../lib/onchain/txErrors';
 import type { Document } from '../lib/glyphs/types';
 import type { TxHash, TxStatus } from '../types/web3';
 
+function mapGlyphsToCache(
+  glyphsToCache: Awaited<ReturnType<typeof buildGlyphsToCache>>,
+) {
+  return glyphsToCache.map((g) => ({
+    glyphId: g.glyphId,
+    glyphData: g.glyphData,
+    proof: g.proof,
+  }));
+}
+
 async function prepareGlyphs(clusters: Document, themeId: number, layoutAlign: number) {
   const bytes = await encodeDocument(clusters, themeId, layoutAlign);
   const onchainClusters = await documentToOnchainClusters(clusters);
@@ -73,25 +83,16 @@ export function useKaomojiWrite() {
     [],
   );
 
+  /** Random composition from the on-chain pool — no user-supplied layout. */
   const reveal = useCallback(
-    async (tokenId: string, clusters: Document, themeId: number, layoutAlign: number) => {
-      setStatus({ state: 'pending', hash: null, message: 'Preparing reveal…' });
-      const { composition, glyphsToCache } = await prepareGlyphs(clusters, themeId, layoutAlign);
-      setStatus({ state: 'pending', hash: null, message: 'Confirm in wallet…' });
+    async (tokenId: string) => {
+      setStatus({ state: 'pending', hash: null, message: 'Confirm reveal in wallet…' });
       return runTx('Revealing on-chain…', () =>
         writeContractAsync({
           address: KAOMOJI_NFT_ADDRESS,
           abi: kaomojiNftAbiTyped,
           functionName: 'reveal',
-          args: [
-            BigInt(tokenId),
-            composition,
-            glyphsToCache.map((g) => ({
-              glyphId: g.glyphId,
-              glyphData: g.glyphData,
-              proof: g.proof,
-            })),
-          ],
+          args: [BigInt(tokenId), []],
         }),
       );
     },
@@ -108,15 +109,7 @@ export function useKaomojiWrite() {
           address: KAOMOJI_NFT_ADDRESS,
           abi: kaomojiNftAbiTyped,
           functionName: 'edit',
-          args: [
-            BigInt(tokenId),
-            composition,
-            glyphsToCache.map((g) => ({
-              glyphId: g.glyphId,
-              glyphData: g.glyphData,
-              proof: g.proof,
-            })),
-          ],
+          args: [BigInt(tokenId), composition, mapGlyphsToCache(glyphsToCache)],
         }),
       );
     },
@@ -130,8 +123,8 @@ export function useKaomojiWrite() {
         writeContractAsync({
           address: KAOMOJI_NFT_ADDRESS,
           abi: kaomojiNftAbiTyped,
-          functionName: 'sacrifice',
-          args: [BigInt(burnTokenId), BigInt(targetTokenId)],
+          functionName: 'sacrificeBatch',
+          args: [[BigInt(burnTokenId)], BigInt(targetTokenId)],
         }),
       );
     },

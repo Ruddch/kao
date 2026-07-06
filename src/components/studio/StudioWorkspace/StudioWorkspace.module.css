@@ -90,6 +90,41 @@
   text-align: center;
 }
 
+.unrevealed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--gap-md);
+  border: 2px solid var(--fg);
+  background: var(--surface);
+  box-shadow: var(--shadow-hard-sm);
+  min-height: 200px;
+  justify-content: center;
+}
+
+.unrevealedImg {
+  max-width: 100%;
+  height: auto;
+}
+
+.unrevealedText {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.unrevealedHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 28ch;
+}
+
 .modeSwitch {
   display: flex;
   gap: 0;

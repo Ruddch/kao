@@ -63,7 +63,7 @@ export function InkPanel({
         <span>
           Level {target.level}
           {nextLevel !== null && nextThreshold !== null && (
-            <> · {target.inkReceived}/{nextThreshold} ink received</>
+            <> · {target.inkReceived}+ ink toward lvl {nextLevel}</>
           )}
         </span>
         {maxAnimated > 0 && (
