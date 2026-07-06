@@ -81,3 +81,16 @@
   font-weight: 700;
   text-align: center;
 }
+
+.hint {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.summary {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+}

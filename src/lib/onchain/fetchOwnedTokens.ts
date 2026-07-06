@@ -292,12 +292,13 @@ export function patchKaomojiDraft(
 
 export function patchSacrificeResult(
   nfts: KaomojiNft[],
-  burnTokenId: string,
+  burnTokenIds: string[],
   targetTokenId: string,
   inkReward: number,
 ): KaomojiNft[] {
+  const burned = new Set(burnTokenIds);
   return nfts
-    .filter((nft) => nft.tokenId !== burnTokenId)
+    .filter((nft) => !burned.has(nft.tokenId))
     .map((nft) => {
       if (nft.tokenId !== targetTokenId) return nft;
       const inkReceived = nft.inkReceived + inkReward;

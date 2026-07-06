@@ -95,11 +95,11 @@ export function useOwnedKaomoji(address: Address | undefined) {
   );
 
   const applySacrifice = useCallback(
-    (burnTokenId: string, targetTokenId: string, inkReward: number) => {
-      if (!address) return;
+    (burnTokenIds: string[], targetTokenId: string, inkReward: number) => {
+      if (!address || burnTokenIds.length === 0) return;
       queryClient.setQueryData<KaomojiNft[]>(ownedKaomojiQueryKey(address), (old) => {
         if (!old) return old;
-        return patchSacrificeResult(old, burnTokenId, targetTokenId, inkReward);
+        return patchSacrificeResult(old, burnTokenIds, targetTokenId, inkReward);
       });
     },
     [address, queryClient],

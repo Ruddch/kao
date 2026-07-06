@@ -114,7 +114,7 @@ export function StudioPage() {
   const editorRef = useRef<StudioGlyphEditorHandle>(null);
   const lastTxActionRef = useRef<StudioTxAction | null>(null);
   const lastSacrificeRewardRef = useRef<number>(0);
-  const lastSacrificeBurnIdRef = useRef<string | null>(null);
+  const lastSacrificeBurnIdsRef = useRef<string[]>([]);
   const draftTokenRef = useRef<string | null>(null);
 
   const [activeTokenId, setActiveTokenId] = useState<string | null>(null);
@@ -129,6 +129,7 @@ export function StudioPage() {
   const [studioMode, setStudioMode] = useState<StudioEditorMode>('edit');
   const [animLimitHint, setAnimLimitHint] = useState<string | null>(null);
   const [txSuccessTitle, setTxSuccessTitle] = useState<string | undefined>();
+  const [selectedSacrificeIds, setSelectedSacrificeIds] = useState<string[]>([]);
 
   const [pack, setPack] = useState<GlyphPack | null>(null);
   const [lookup, setLookup] = useState<GlyphLookup | null>(null);
@@ -259,17 +260,11 @@ export function StudioPage() {
 
     const action = lastTxActionRef.current;
     const tokenId = activeTokenId;
-    const burnId = lastSacrificeBurnIdRef.current;
-    const inkReward = lastSacrificeRewardRef.current;
     resetStatus();
     lastTxActionRef.current = null;
-    lastSacrificeBurnIdRef.current = null;
+    lastSacrificeBurnIdsRef.current = [];
 
     if (action === 'sacrifice') {
-      if (burnId && tokenId) {
-        applySacrifice(burnId, tokenId, inkReward);
-        void syncEntry(tokenId);
-      }
       return;
     }
 
@@ -297,7 +292,6 @@ export function StudioPage() {
     layout,
     patchFromDraft,
     syncEntry,
-    applySacrifice,
     resetStatus,
   ]);
 
@@ -357,6 +351,15 @@ export function StudioPage() {
       n.unlockedSymbols >= DEFAULT_MINT_UNLOCKED_SYMBOLS,
   );
 
+  const sacrificeInkReward = useMemo(
+    () =>
+      selectedSacrificeIds.reduce((sum, id) => {
+        const burnNft = sacrificeCandidates.find((n) => n.tokenId === id);
+        return sum + (burnNft ? burnReward(burnNft.unlockedSymbols) : 0);
+      }, 0),
+    [selectedSacrificeIds, sacrificeCandidates],
+  );
+
   const focusEditor = useCallback(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -388,6 +391,7 @@ export function StudioPage() {
       setLayoutAlign(draft.layoutAlign);
       setSelectedSlot(null);
       setPickAltMode(false);
+      setSelectedSacrificeIds([]);
       setStudioMode('edit');
       try {
         localStorage.setItem(LAST_STUDIO_TOKEN_KEY, nft.tokenId);
@@ -411,12 +415,16 @@ export function StudioPage() {
     await edit(activeNft.tokenId, clusters, themeId, layoutAlign);
   };
 
-  const handleSacrifice = async (burnId: string, targetId: string) => {
-    const burnNft = nfts.find((n) => n.tokenId === burnId);
-    lastSacrificeBurnIdRef.current = burnId;
-    lastSacrificeRewardRef.current = burnNft ? burnReward(burnNft.unlockedSymbols) : 0;
+  const handleSacrifice = async (burnIds: string[], targetId: string) => {
+    const inkReward = burnIds.reduce((sum, id) => {
+      const burnNft = nfts.find((n) => n.tokenId === id);
+      return sum + (burnNft ? burnReward(burnNft.unlockedSymbols) : 0);
+    }, 0);
+    lastSacrificeBurnIdsRef.current = burnIds;
+    lastSacrificeRewardRef.current = inkReward;
     lastTxActionRef.current = 'sacrifice';
-    await sacrifice(burnId, targetId);
+    await sacrifice(burnIds, targetId);
+    applySacrifice(burnIds, targetId, inkReward);
   };
 
   const handleSymbolPick = (symbol: string) => {
@@ -650,6 +658,9 @@ export function StudioPage() {
         editDiff={editDiff}
         compositionChanged={compositionChanged}
         sacrificeCandidates={sacrificeCandidates}
+        selectedSacrificeIds={selectedSacrificeIds}
+        onSacrificeSelectionChange={setSelectedSacrificeIds}
+        sacrificeInkReward={sacrificeInkReward}
         onSacrifice={handleSacrifice}
         sacrificeDisabled={isPending || wrongChain}
         primaryLabel={actionMeta.label}
@@ -659,7 +670,6 @@ export function StudioPage() {
         loading={isPending}
         animationEnabled={animationEnabled}
         maxAnimated={maxAnimated}
-        animatedCount={animatedCount}
         selectedSlot={selectedSlot}
         onSlotSelect={handleSlotSelect}
         pickAltMode={pickAltMode}
@@ -700,7 +710,14 @@ export function StudioPage() {
           />
         )}
 
-        <div className={styles.workspace}>
+        <div
+          className={[
+            styles.workspace,
+            status.state !== 'idle' && styles.workspaceScrollLock,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           {renderWorkspace()}
           <TxOverlay
             status={status}

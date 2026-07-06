@@ -3,10 +3,11 @@ import { RoleSymbolPalette } from '../../home/RoleSymbolPalette';
 import type { Document, GlyphLookup, GlyphPack, PaletteCategory } from '../../../lib/glyphs';
 import type { DiffResult } from '../../../lib/onchain/symbolDiff';
 import type { LayoutConstants } from '../../../lib/onchain/glyphIndex';
-import { MAX_UNLOCKED_SYMBOLS } from '../../../lib/onchain/normalize';
 import type { KaomojiNft } from '../../../types/nft';
 import { Button } from '../../ui/Button';
 import { InkPanel } from '../InkPanel';
+import { EditCostSummary } from '../EditCostSummary';
+import { NftStatsPanel } from '../NftStatsPanel';
 import {
   StudioGlyphEditor,
   type StudioEditorMode,
@@ -38,7 +39,10 @@ interface StudioWorkspaceProps {
   editDiff: DiffResult | null;
   compositionChanged: boolean;
   sacrificeCandidates: KaomojiNft[];
-  onSacrifice: (burnTokenId: string, targetTokenId: string) => Promise<void>;
+  selectedSacrificeIds: string[];
+  onSacrificeSelectionChange: (burnTokenIds: string[]) => void;
+  sacrificeInkReward: number;
+  onSacrifice: (burnTokenIds: string[], targetTokenId: string) => Promise<void>;
   sacrificeDisabled?: boolean;
   primaryLabel: string;
   onPrimary: () => void;
@@ -47,7 +51,6 @@ interface StudioWorkspaceProps {
   loading?: boolean;
   animationEnabled?: boolean;
   maxAnimated?: number;
-  animatedCount?: number;
   selectedSlot?: number | null;
   onSlotSelect?: (flatIndex: number) => void;
   pickAltMode?: boolean;
@@ -76,6 +79,9 @@ export function StudioWorkspace({
   editDiff,
   compositionChanged,
   sacrificeCandidates,
+  selectedSacrificeIds,
+  onSacrificeSelectionChange,
+  sacrificeInkReward,
   onSacrifice,
   sacrificeDisabled,
   primaryLabel,
@@ -85,7 +91,6 @@ export function StudioWorkspace({
   loading,
   animationEnabled,
   maxAnimated = 0,
-  animatedCount = 0,
   selectedSlot,
   onSlotSelect,
   pickAltMode,
@@ -213,10 +218,13 @@ export function StudioWorkspace({
           )}
 
           {nft.revealed ? (
-            <p className={styles.stats}>
-              Ink {nft.ink} · Lvl {nft.level} · {nft.unlockedSymbols}/{MAX_UNLOCKED_SYMBOLS} slots
-              {maxAnimated > 0 && ` · ${animatedCount}/${maxAnimated} anim`}
-            </p>
+            <NftStatsPanel
+              nft={nft}
+              compositionChanged={compositionChanged}
+              editDiff={editDiff}
+              editCost={editCost}
+              sacrificeInkReward={sacrificeInkReward}
+            />
           ) : (
             <p className={styles.stats}>Unrevealed · random composition on reveal</p>
           )}
@@ -251,7 +259,7 @@ export function StudioWorkspace({
                     (selectedSlotPreview?.animated
                       ? 'Pick a symbol to change Frame B, or select another slot.'
                       : 'Select a symbol in the preview, then pick Frame B. Symbols are not added in Animate mode.')
-                  : 'Modifiers attach to the last symbol. Each layer = 1 slot.'}
+                  : ''}
             </p>
             {palette.length > 0 ? (
               <RoleSymbolPalette categories={palette} onSymbolPick={onSymbolPick} />
@@ -264,18 +272,24 @@ export function StudioWorkspace({
           {nft.revealed && (
             <InkPanel
               target={nft}
-              editCost={editCost}
-              editDiff={editDiff}
-              compositionChanged={compositionChanged}
               candidates={sacrificeCandidates}
+              selectedSacrificeIds={selectedSacrificeIds}
+              onSacrificeSelectionChange={onSacrificeSelectionChange}
               onSacrifice={onSacrifice}
               sacrificeDisabled={sacrificeDisabled}
-              animatedCount={animatedCount}
-              maxAnimated={maxAnimated}
             />
           )}
 
           <div className={styles.actionBlock}>
+            {isRevealed && (
+              <EditCostSummary
+                target={nft}
+                editCost={editCost}
+                editDiff={editDiff}
+                compositionChanged={compositionChanged}
+                sacrificeInkReward={sacrificeInkReward}
+              />
+            )}
             {actionReason && <p className={styles.actionReason}>{actionReason}</p>}
             <Button variant="primary" disabled={primaryDisabled || loading} onClick={onPrimary}>
               {loading ? '…' : primaryLabel}

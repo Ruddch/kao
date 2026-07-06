@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import { useState, type RefObject } from 'react';
 import { RoleSymbolPalette } from '../../home/RoleSymbolPalette';
 import type { Document, GlyphLookup, GlyphPack, PaletteCategory } from '../../../lib/glyphs';
 import type { LayoutConstants } from '../../../lib/onchain/glyphIndex';
@@ -24,9 +24,8 @@ interface WorkshopProps {
   onThemeChange: (themeId: number) => void;
   palette: PaletteCategory[];
   onSymbolPick: (symbol: string) => void;
-  editCost: number | null;
   sacrificeCandidates: KaomojiNft[];
-  onSacrifice: (burnTokenId: string, targetTokenId: string) => Promise<void>;
+  onSacrifice: (burnTokenIds: string[], targetTokenId: string) => Promise<void>;
   sacrificeDisabled?: boolean;
   onBack: () => void;
 }
@@ -43,12 +42,13 @@ export function Workshop({
   onThemeChange,
   palette,
   onSymbolPick,
-  editCost,
   sacrificeCandidates,
   onSacrifice,
   sacrificeDisabled,
   onBack,
 }: WorkshopProps) {
+  const [selectedSacrificeIds, setSelectedSacrificeIds] = useState<string[]>([]);
+
   return (
     <div className={styles.root}>
       <header className={styles.header}>
@@ -95,10 +95,9 @@ export function Workshop({
 
         <InkPanel
           target={nft}
-          editCost={editCost}
-          editDiff={null}
-          compositionChanged={editCost !== null && editCost > 0}
           candidates={sacrificeCandidates}
+          selectedSacrificeIds={selectedSacrificeIds}
+          onSacrificeSelectionChange={setSelectedSacrificeIds}
           onSacrifice={onSacrifice}
           sacrificeDisabled={sacrificeDisabled}
         />

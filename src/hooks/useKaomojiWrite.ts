@@ -117,15 +117,21 @@ export function useKaomojiWrite() {
   );
 
   const sacrifice = useCallback(
-    async (burnTokenId: string, targetTokenId: string) => {
+    async (burnTokenIds: string[], targetTokenId: string) => {
+      if (burnTokenIds.length === 0) {
+        throw new Error('Select at least one Kaomoji to sacrifice');
+      }
       setStatus({ state: 'pending', hash: null, message: 'Confirm sacrifice…' });
-      return runTx('Sacrificing NFT…', () =>
-        writeContractAsync({
-          address: KAOMOJI_NFT_ADDRESS,
-          abi: kaomojiNftAbiTyped,
-          functionName: 'sacrificeBatch',
-          args: [[BigInt(burnTokenId)], BigInt(targetTokenId)],
-        }),
+      const count = burnTokenIds.length;
+      return runTx(
+        count === 1 ? 'Sacrificing NFT…' : `Sacrificing ${count} NFTs…`,
+        () =>
+          writeContractAsync({
+            address: KAOMOJI_NFT_ADDRESS,
+            abi: kaomojiNftAbiTyped,
+            functionName: 'sacrificeBatch',
+            args: [burnTokenIds.map((id) => BigInt(id)), BigInt(targetTokenId)],
+          }),
       );
     },
     [runTx, writeContractAsync],

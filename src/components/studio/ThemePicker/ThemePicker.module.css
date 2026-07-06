@@ -11,9 +11,35 @@
   box-shadow: var(--shadow-hard-sm);
   cursor: pointer;
   padding: 0;
+  transition:
+    transform var(--duration-fast),
+    box-shadow var(--duration-fast);
 }
 
+.swatch:hover,
 .swatchActive {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-md);
+}
+
+.swatch:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.swatch:focus-visible {
   outline: 3px solid var(--fg);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swatch {
+    transition: none;
+  }
+
+  .swatch:hover,
+  .swatchActive,
+  .swatch:active {
+    transform: none;
+  }
 }

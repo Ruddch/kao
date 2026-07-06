@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { basescanTxUrl } from '../../../config/external';
 import type { TxStatus } from '../../../types/web3';
 import { Button } from '../../ui/Button';
@@ -10,13 +12,26 @@ interface TxOverlayProps {
 }
 
 export function TxOverlay({ status, successTitle, onDismiss }: TxOverlayProps) {
-  if (status.state === 'idle') return null;
+  const isOpen = status.state !== 'idle';
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const isPending = status.state === 'pending' || status.state === 'confirming';
   const isSuccess = status.state === 'success';
   const isError = status.state === 'failed';
 
-  return (
+  return createPortal(
     <div className={styles.overlay} role="status" aria-live="polite">
       <div
         className={[
@@ -81,6 +96,7 @@ export function TxOverlay({ status, successTitle, onDismiss }: TxOverlayProps) {
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

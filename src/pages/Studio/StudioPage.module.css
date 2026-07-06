@@ -27,6 +27,10 @@
   background: var(--bg);
 }
 
+.workspaceScrollLock {
+  overflow: hidden;
+}
+
 .empty {
   display: flex;
   flex-direction: column;

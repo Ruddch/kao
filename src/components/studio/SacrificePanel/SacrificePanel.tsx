@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { burnReward } from '../../../lib/onchain/inkMath';
 import type { KaomojiNft } from '../../../types/nft';
 import { Button } from '../../ui/Button';
@@ -8,40 +8,69 @@ import styles from './SacrificePanel.module.css';
 interface SacrificePanelProps {
   target: KaomojiNft;
   candidates: KaomojiNft[];
-  onSacrifice: (burnTokenId: string, targetTokenId: string) => Promise<void>;
+  selectedBurnIds: string[];
+  onSelectionChange: (burnTokenIds: string[]) => void;
+  onSacrifice: (burnTokenIds: string[], targetTokenId: string) => Promise<void>;
   disabled?: boolean;
   compact?: boolean;
+}
+
+function totalBurnReward(nfts: KaomojiNft[]): number {
+  return nfts.reduce((sum, nft) => sum + burnReward(nft.unlockedSymbols), 0);
 }
 
 export function SacrificePanel({
   target,
   candidates,
+  selectedBurnIds,
+  onSelectionChange,
   onSacrifice,
   disabled,
   compact,
 }: SacrificePanelProps) {
-  const [burnId, setBurnId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const burnIds = useMemo(() => new Set(selectedBurnIds), [selectedBurnIds]);
 
-  const burnNft = candidates.find((n) => n.tokenId === burnId);
-  const reward = burnNft ? burnReward(burnNft.unlockedSymbols) : 0;
+  const selected = useMemo(
+    () => candidates.filter((n) => burnIds.has(n.tokenId)),
+    [candidates, burnIds],
+  );
+  const reward = totalBurnReward(selected);
+
+  const toggleBurn = (tokenId: string) => {
+    if (burnIds.has(tokenId)) {
+      onSelectionChange(selectedBurnIds.filter((id) => id !== tokenId));
+    } else {
+      onSelectionChange([...selectedBurnIds, tokenId]);
+    }
+  };
 
   const handleSacrifice = async () => {
-    if (!burnId) return;
+    if (selectedBurnIds.length === 0) return;
     setSubmitting(true);
     try {
-      await onSacrifice(burnId, target.tokenId);
-      setBurnId(null);
+      await onSacrifice(selectedBurnIds, target.tokenId);
+      onSelectionChange([]);
     } finally {
       setSubmitting(false);
     }
   };
 
+  const buttonLabel = (() => {
+    if (submitting) return '…';
+    if (selected.length === 0) return 'Sacrifice for Ink';
+    if (selected.length === 1) {
+      return `Burn #${selected[0].tokenId} · +${reward} Ink`;
+    }
+    return `Burn ${selected.length} Kaomoji · +${reward} Ink`;
+  })();
+
   return (
     <div className={styles.root}>
       {!compact && (
         <Callout variant="danger" title="Permanent burn">
-          Sacrifice destroys one revealed Kaomoji and grants Ink to #{target.tokenId}.
+          Sacrifice destroys selected revealed Kaomoji and grants Ink to #{target.tokenId}. You can
+          select several at once.
         </Callout>
       )}
 
@@ -49,6 +78,12 @@ export function SacrificePanel({
         {compact ? (
           <>
             Target: <strong>#{target.tokenId}</strong> (this one) · {target.ink} Ink
+            {candidates.length > 0 && (
+              <>
+                <br />
+                <span className={styles.hint}>Tap to select one or more to burn</span>
+              </>
+            )}
           </>
         ) : (
           <>
@@ -65,13 +100,14 @@ export function SacrificePanel({
             <button
               key={nft.tokenId}
               type="button"
+              aria-pressed={burnIds.has(nft.tokenId)}
               className={[
                 styles.option,
-                burnId === nft.tokenId && styles.optionActive,
+                burnIds.has(nft.tokenId) && styles.optionActive,
               ]
                 .filter(Boolean)
                 .join(' ')}
-              onClick={() => setBurnId(nft.tokenId)}
+              onClick={() => toggleBurn(nft.tokenId)}
             >
               <span className={styles.optionPreview}>
                 {nft.previewImage ? (
@@ -88,12 +124,18 @@ export function SacrificePanel({
         </div>
       )}
 
+      {selected.length > 1 && (
+        <p className={styles.summary}>
+          {selected.length} selected · +{reward} Ink total
+        </p>
+      )}
+
       <Button
         variant="danger"
-        disabled={disabled || !burnId || candidates.length === 0 || submitting}
+        disabled={disabled || selectedBurnIds.length === 0 || candidates.length === 0 || submitting}
         onClick={handleSacrifice}
       >
-        {submitting ? '…' : burnId ? `Burn #${burnId} · +${reward} Ink` : 'Sacrifice for Ink'}
+        {buttonLabel}
       </Button>
     </div>
   );
