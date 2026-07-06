@@ -127,7 +127,6 @@ export function StudioPage() {
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [pickAltMode, setPickAltMode] = useState(false);
   const [studioMode, setStudioMode] = useState<StudioEditorMode>('edit');
-  const [animLimitHint, setAnimLimitHint] = useState<string | null>(null);
   const [txSuccessTitle, setTxSuccessTitle] = useState<string | undefined>();
   const [selectedSacrificeIds, setSelectedSacrificeIds] = useState<string[]>([]);
 
@@ -306,7 +305,7 @@ export function StudioPage() {
       : 0
     : 0;
 
-  const animationEnabled = Boolean(activeNft?.revealed && maxAnimated > 0);
+  const animationEnabled = Boolean(activeNft?.revealed);
   const animationInvalidReason = pack ? findInvalidAnimationSlots(clusters, pack) : null;
 
   const selectedSlotRef = selectedSlot !== null ? slotRefFromFlatIndex(clusters, selectedSlot) : null;
@@ -453,12 +452,8 @@ export function StudioPage() {
       if (!validation.ok) return;
 
       const ref = selectedSlotRef;
-      const nextCount = animatedSymbolCountFromDocument(clusters);
-      if (!slotAlreadyAnimated && nextCount >= maxAnimated) return;
-
       setClusters(setSlotAlt(clusters, ref, altKey));
       setPickAltMode(false);
-      setAnimLimitHint(null);
       return;
     }
 
@@ -479,23 +474,15 @@ export function StudioPage() {
   const handleSlotSelect = useCallback(
     (flatIndex: number) => {
       setSelectedSlot(flatIndex);
-      setAnimLimitHint(null);
 
       const ref = slotRefFromFlatIndex(clusters, flatIndex);
       if (!ref) return;
 
       const cluster = clusters[ref.clusterIdx];
       const alreadyAnimated = isSlotAnimated(cluster, ref.kind, ref.markIdx);
-
-      if (!alreadyAnimated && animatedCount >= maxAnimated) {
-        setPickAltMode(false);
-        setAnimLimitHint(`Animation limit reached (${maxAnimated} slot${maxAnimated === 1 ? '' : 's'} at your level)`);
-        return;
-      }
-
       setPickAltMode(!alreadyAnimated);
     },
-    [animatedCount, clusters, maxAnimated],
+    [clusters],
   );
 
   const handleRemoveAnimation = useCallback(() => {
@@ -553,7 +540,7 @@ export function StudioPage() {
     } else if (symbolCount > newUnlocked) {
       reason = `Composition uses ${symbolCount} symbols but edit unlocks only ${newUnlocked}`;
     } else if (animatedCount > maxAnimated) {
-      reason = `Too many animated symbols (${animatedCount}/${maxAnimated})`;
+      reason = `Not enough animated symbol slots unlocked (${animatedCount} used, ${maxAnimated} available)`;
     } else if (animationInvalidReason) {
       reason = animationInvalidReason;
     } else if (editCost > activeNft.ink) {
@@ -669,7 +656,7 @@ export function StudioPage() {
         actionReason={actionMeta.reason}
         loading={isPending}
         animationEnabled={animationEnabled}
-        maxAnimated={maxAnimated}
+        animatedCount={animatedCount}
         selectedSlot={selectedSlot}
         onSlotSelect={handleSlotSelect}
         pickAltMode={pickAltMode}
@@ -678,7 +665,6 @@ export function StudioPage() {
         studioMode={studioMode}
         onStudioModeChange={handleStudioModeChange}
         selectedSlotPreview={selectedSlotPreview}
-        animLimitHint={animLimitHint}
       />
     );
   };

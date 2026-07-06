@@ -50,7 +50,7 @@ interface StudioWorkspaceProps {
   actionReason?: string;
   loading?: boolean;
   animationEnabled?: boolean;
-  maxAnimated?: number;
+  animatedCount?: number;
   selectedSlot?: number | null;
   onSlotSelect?: (flatIndex: number) => void;
   pickAltMode?: boolean;
@@ -59,7 +59,6 @@ interface StudioWorkspaceProps {
   studioMode?: StudioEditorMode;
   onStudioModeChange?: (mode: StudioEditorMode) => void;
   selectedSlotPreview?: SelectedSlotPreview | null;
-  animLimitHint?: string | null;
 }
 
 export function StudioWorkspace({
@@ -90,7 +89,7 @@ export function StudioWorkspace({
   actionReason,
   loading,
   animationEnabled,
-  maxAnimated = 0,
+  animatedCount = 0,
   selectedSlot,
   onSlotSelect,
   pickAltMode,
@@ -99,7 +98,6 @@ export function StudioWorkspace({
   studioMode = 'edit',
   onStudioModeChange,
   selectedSlotPreview,
-  animLimitHint,
 }: StudioWorkspaceProps) {
   const isAnimateMode = studioMode === 'animate';
   const isRevealed = nft.revealed;
@@ -109,7 +107,7 @@ export function StudioWorkspace({
       <div className={styles.body}>
         <div className={styles.previewCol} id="studio-editor-anchor">
           <span className={styles.previewLabel}>Preview</span>
-          {isRevealed && animationEnabled && maxAnimated > 0 && onStudioModeChange && (
+          {isRevealed && animationEnabled && onStudioModeChange && (
             <div className={styles.modeSwitch} role="tablist" aria-label="Editor mode">
               <button
                 type="button"
@@ -207,8 +205,6 @@ export function StudioWorkspace({
             </div>
           )}
 
-          {animLimitHint && <p className={styles.animLimitHint}>{animLimitHint}</p>}
-
           {isRevealed && isAnimateMode && canRemoveAnimation && (
             <div className={styles.animToolbar}>
               <button type="button" className={styles.animBtn} onClick={onRemoveAnimation}>
@@ -224,6 +220,7 @@ export function StudioWorkspace({
               editDiff={editDiff}
               editCost={editCost}
               sacrificeInkReward={sacrificeInkReward}
+              animatedCount={animatedCount}
             />
           ) : (
             <p className={styles.stats}>Unrevealed · random composition on reveal</p>
@@ -255,10 +252,9 @@ export function StudioWorkspace({
               {isAnimateMode && pickAltMode
                 ? `Choose a different symbol — preview will alternate ${selectedSlotPreview?.frameA ?? 'A'} ↔ your pick. Must differ from Frame A.`
                 : isAnimateMode
-                  ? animLimitHint ??
-                    (selectedSlotPreview?.animated
-                      ? 'Pick a symbol to change Frame B, or select another slot.'
-                      : 'Select a symbol in the preview, then pick Frame B. Symbols are not added in Animate mode.')
+                  ? selectedSlotPreview?.animated
+                    ? 'Pick a symbol to change Frame B, or select another slot.'
+                    : 'Select a symbol in the preview, then pick Frame B. Symbols are not added in Animate mode.'
                   : ''}
             </p>
             {palette.length > 0 ? (

@@ -11,24 +11,25 @@ interface NftStatsPanelProps {
   editDiff: DiffResult | null;
   editCost: number | null;
   sacrificeInkReward?: number;
-}
-
-function projectionTone(current: number, projected: number): string {
-  if (projected > current) return styles.projectedUp;
-  if (projected < current) return styles.projectedDown;
-  return styles.projected;
+  animatedCount?: number;
 }
 
 function StatProjection({
   current,
   projected,
+  projectedTone,
 }: {
   current: number;
   projected: number;
+  projectedTone?: 'up' | 'down';
 }) {
   if (projected === current) {
     return <span className={styles.value}>{current}</span>;
   }
+
+  const tone =
+    projectedTone ??
+    (projected > current ? 'up' : projected < current ? 'down' : undefined);
 
   return (
     <span className={styles.valueWrap}>
@@ -36,7 +37,15 @@ function StatProjection({
       <span className={styles.arrow} aria-hidden="true">
         →
       </span>
-      <span className={[styles.projected, projectionTone(current, projected)].join(' ')}>
+      <span
+        className={[
+          styles.projected,
+          tone === 'up' && styles.projectedUp,
+          tone === 'down' && styles.projectedDown,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         {projected}
       </span>
     </span>
@@ -73,6 +82,7 @@ export function NftStatsPanel({
   editDiff,
   editCost,
   sacrificeInkReward = 0,
+  animatedCount = 0,
 }: NftStatsPanelProps) {
   const preview = useMemo(
     () =>
@@ -87,6 +97,11 @@ export function NftStatsPanel({
 
   const symbolsCurrent = `${preview.symbols}/${MAX_UNLOCKED_SYMBOLS}`;
   const symbolsProjected = `${preview.symbolsProjected}/${MAX_UNLOCKED_SYMBOLS}`;
+
+  const animatedOverflow = animatedCount > preview.animatedUnlocked;
+  const animatedProjected = animatedOverflow
+    ? animatedCount
+    : preview.animatedProjected;
 
   return (
     <div className={styles.root} aria-label="NFT traits preview">
@@ -113,7 +128,8 @@ export function NftStatsPanel({
         <span className={styles.label}>Animated Symbols Unlocked</span>
         <StatProjection
           current={preview.animatedUnlocked}
-          projected={preview.animatedProjected}
+          projected={animatedProjected}
+          projectedTone={animatedOverflow ? 'down' : undefined}
         />
       </div>
     </div>
