@@ -28,9 +28,10 @@ const STATE_READS = [
 
 /** ~4 NFTs × 5 state fields — keeps multicall calldata under public RPC limits. */
 const STATE_CHUNK_SIZE = STATE_READS.length * 4;
-const OWNER_SCAN_CHUNK_SIZE = 16;
+/** ownerOf scan across totalMinted — larger chunks, no artificial delay (ETH ~1k minted). */
+const OWNER_SCAN_CHUNK_SIZE = 50;
 const TOKEN_URI_CHUNK_SIZE = 8;
-const CHUNK_DELAY_MS = 400;
+const CHUNK_DELAY_MS = 80;
 
 function parseCompositionHex(compositionHex: Hex): Uint8Array | null {
   if (!compositionHex || compositionHex === '0x') return null;
@@ -180,7 +181,7 @@ async function discoverOwnedTokenIds(address: Address): Promise<string[]> {
 
   const ownerResults = await multicallInChunks(client, ownerContracts, {
     chunkSize: OWNER_SCAN_CHUNK_SIZE,
-    delayMs: CHUNK_DELAY_MS,
+    delayMs: 0,
     allowFailure: true,
   });
 
