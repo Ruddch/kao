@@ -3,10 +3,8 @@
 interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL: string;
   readonly VITE_SUPABASE_ANON_KEY: string;
-  /** Preferred Ethereum mainnet RPC URL. */
+  /** Ethereum mainnet RPC URL (Alchemy / Infura / etc.). */
   readonly VITE_ETH_RPC_URL?: string;
-  /** @deprecated Use VITE_ETH_RPC_URL */
-  readonly VITE_BASE_RPC_URL?: string;
 }
 
 interface ImportMeta {
