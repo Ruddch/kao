@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
-import { base } from 'wagmi/chains';
+import { mainnet } from 'wagmi/chains';
 import { CollectionHub } from '../../components/studio/CollectionHub';
 import { type StudioGlyphEditorHandle, type StudioEditorMode } from '../../components/studio/StudioGlyphEditor';
 import { StudioWorkspace } from '../../components/studio/StudioWorkspace';
@@ -108,6 +108,7 @@ function hasUnsavedDraft(
 }
 
 export function StudioPage() {
+  const navigate = useNavigate();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
@@ -147,7 +148,7 @@ export function StudioPage() {
     syncEntry,
     applySacrifice,
   } = useOwnedKaomoji(address);
-  const { reveal, edit, sacrifice, status, isPending, resetStatus } = useKaomojiWrite();
+  const { edit, sacrifice, status, isPending, resetStatus } = useKaomojiWrite();
 
   const wrongChain = isConnected && chainId !== COLLECTION.chainId;
   const activeNft = nfts.find((n) => n.tokenId === activeTokenId) ?? null;
@@ -402,10 +403,9 @@ export function StudioPage() {
     [activeTokenId, activeNft, compositionChanged, focusEditor],
   );
 
-  const handleReveal = async () => {
+  const handleReveal = () => {
     if (!activeNft) return;
-    lastTxActionRef.current = 'reveal';
-    await reveal(activeNft.tokenId);
+    navigate(`/reveal?token=${encodeURIComponent(activeNft.tokenId)}`);
   };
 
   const handleEdit = async () => {
@@ -584,7 +584,7 @@ export function StudioPage() {
         <div className={styles.empty}>
           <h2 className={styles.emptyTitle}>Kaomoji Studio</h2>
           <p className={styles.emptySubtitle}>
-            Connect your wallet in the header to reveal, edit, and upgrade your Kaomoji on Base.
+            Connect your wallet in the header to reveal, edit, and upgrade your Kaomoji on Ethereum.
           </p>
         </div>
       );
@@ -614,7 +614,7 @@ export function StudioPage() {
         <div className={styles.empty}>
           <h2 className={styles.emptyTitle}>Mint your first Kaomoji</h2>
           <p className={styles.emptySubtitle}>
-            Studio opens after you own at least one Kaomoji on Base.
+            Studio opens after you own at least one Kaomoji on Ethereum.
           </p>
           <Link to="/checker">
             <Button variant="primary">Go to Checker</Button>
@@ -674,13 +674,13 @@ export function StudioPage() {
       {wrongChain && (
         <div className={styles.banner}>
           <Callout variant="warning" title="Wrong network">
-            Switch to Base to manage your Kaomoji.
+            Switch to Ethereum to manage your Kaomoji.
             <Button
               variant="secondary"
               className={styles.chainBtn}
-              onClick={() => switchChain({ chainId: base.id })}
+              onClick={() => switchChain({ chainId: mainnet.id })}
             >
-              Switch to Base
+              Switch to Ethereum
             </Button>
           </Callout>
         </div>

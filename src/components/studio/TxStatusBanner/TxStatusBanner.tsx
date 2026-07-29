@@ -1,4 +1,4 @@
-import { basescanTxUrl } from '../../../config/external';
+import { explorerTxUrl } from '../../../config/external';
 import type { TxStatus } from '../../../types/web3';
 import styles from './TxStatusBanner.module.css';
 
@@ -27,7 +27,7 @@ export function TxStatusBanner({ status, onDismiss }: TxStatusBannerProps) {
       {status.hash && (
         <a
           className={styles.link}
-          href={basescanTxUrl(status.hash)}
+          href={explorerTxUrl(status.hash)}
           target="_blank"
           rel="noopener noreferrer"
         >

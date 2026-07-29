@@ -18,6 +18,8 @@ type NavItem = {
 const NAV: NavItem[] = [
   { to: '/', label: 'Home', end: true },
   { to: '/checker', label: 'Checker' },
+  { to: '/studio', label: 'Studio' },
+  { to: '/reveal', label: 'Reveal' },
   { to: '/docs', label: 'Docs', disabled: true, comingSoon: true },
 ];
 

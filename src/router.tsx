@@ -11,6 +11,7 @@ import {
   MechanicsPage,
 } from './pages/Docs/DocsPages';
 import { HomePage } from './pages/Home';
+import { RevealPage } from './pages/Reveal';
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -23,6 +24,7 @@ export const router = createBrowserRouter(
       { index: true, element: <HomePage /> },
       { path: 'checker', element: <MintPage /> },
       { path: 'studio', element: <StudioPage /> },
+      { path: 'reveal', element: <RevealPage /> },
       {
         path: 'docs',
         element: <DocsLayout />,

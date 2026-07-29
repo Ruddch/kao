@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -12,6 +12,8 @@ interface CollectionHubProps {
   activeTokenId: string | null;
   loading?: boolean;
   onSelect: (nft: KaomojiNft) => void;
+  /** Sticky action under the grid (e.g. Reveal all). */
+  footer?: ReactNode;
 }
 
 export function CollectionHub({
@@ -19,6 +21,7 @@ export function CollectionHub({
   activeTokenId,
   loading,
   onSelect,
+  footer,
 }: CollectionHubProps) {
   const [collapsed, setCollapsed] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -38,7 +41,7 @@ export function CollectionHub({
     );
   }
 
-  if (nfts.length === 0) {
+  if (nfts.length === 0 && !footer) {
     return (
       <aside className={styles.root}>
         <p className={styles.status}>
@@ -96,7 +99,14 @@ export function CollectionHub({
       </button>
 
       <div id="studio-nft-panel" ref={panelRef} className={styles.panel}>
-        <div className={styles.grid}>{nfts.map(renderCard)}</div>
+        {nfts.length === 0 ? (
+          <p className={styles.status}>
+            No Kaomoji yet. <Link to="/checker">Mint one</Link> to start.
+          </p>
+        ) : (
+          <div className={styles.grid}>{nfts.map(renderCard)}</div>
+        )}
+        {footer && !collapsed && <div className={styles.footer}>{footer}</div>}
       </div>
     </aside>
   );
