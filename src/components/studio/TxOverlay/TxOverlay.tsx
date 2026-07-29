@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { basescanTxUrl } from '../../../config/external';
+import { explorerTxUrl } from '../../../config/external';
 import type { TxStatus } from '../../../types/web3';
 import { Button } from '../../ui/Button';
 import styles from './TxOverlay.module.css';
@@ -48,7 +48,7 @@ export function TxOverlay({ status, successTitle, onDismiss }: TxOverlayProps) {
             {status.hash && (
               <a
                 className={styles.link}
-                href={basescanTxUrl(status.hash)}
+                href={explorerTxUrl(status.hash)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -65,7 +65,7 @@ export function TxOverlay({ status, successTitle, onDismiss }: TxOverlayProps) {
             {status.hash && (
               <a
                 className={styles.link}
-                href={basescanTxUrl(status.hash)}
+                href={explorerTxUrl(status.hash)}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -14,7 +14,7 @@ export interface MulticallChunkOptions {
 
 /**
  * Runs multicall in small sequential chunks with backoff on rate-limit errors.
- * Public Base RPC rejects large aggregate3 payloads; chunking keeps reads reliable.
+ * Public RPC rejects large aggregate3 payloads; chunking keeps reads reliable.
  */
 export async function multicallInChunks(
   client: PublicClient,

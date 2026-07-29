@@ -1,0 +1,156 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--gap-sm) var(--gap-lg);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.workspaceScrollLock {
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.banner {
+  padding: var(--gap-xs) var(--gap-md);
+  border-bottom: 2px solid var(--fg);
+  background: var(--surface);
+}
+
+.chainBtn {
+  margin-top: var(--gap-xs);
+}
+
+.revealPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--gap-sm);
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: var(--gap-sm);
+  border: var(--border-thin);
+  background: var(--surface);
+  box-shadow: var(--shadow-hard-sm);
+  flex-shrink: 0;
+}
+
+.tokenLabel {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.revealBtn {
+  width: 100%;
+  min-height: 44px;
+  font-size: 14px;
+}
+
+.revealAllBtn {
+  width: 100%;
+  min-height: 40px;
+  font-size: 12px;
+}
+
+.help {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--gap-sm);
+  padding: var(--gap-lg);
+  border: var(--border-thin);
+  background: var(--surface);
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.emptySubtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  max-width: 480px;
+}
+
+@media (max-width: 767px) {
+  .workspace {
+    padding: var(--gap-xs) var(--gap-md);
+  }
+
+  .subtitle {
+    display: none;
+  }
+}
+
+@media (max-height: 720px) {
+  .subtitle {
+    display: none;
+  }
+}

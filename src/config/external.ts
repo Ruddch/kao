@@ -2,25 +2,32 @@ export const EXTERNAL_LINKS = {
   twitter: 'https://x.com/kaomojinft',
   discord: 'https://discord.gg/kaomoji',
   opensea: 'https://opensea.io/collection/kaomoji',
-  basescan: 'https://basescan.org',
+  etherscan: 'https://etherscan.io',
 } as const;
 
 export const COLLECTION = {
   name: 'Kaomoji Genesis',
   nameJa: 'カオモジ',
-  totalSupply: 10_000,
-  contractAddress: '0x49Adf3974D5450B95d89F69EDCB40DFdBDC11b37' as const,
-  glyphPackAddress: '0x98558C945A0c5AC5327b2fE4Ecc0BE5d2C5676C3' as const,
-  glyphCacheAddress: '0xbDBbDD60Fb241F8A7CA67743a2E168322B4acc4D' as const,
-  rendererAddress: '0x41fD7836Dc265204624F0debf2CE4Ce6f21eb7eE' as const,
-  chainId: 8453,
-  chainName: 'Base',
+  totalSupply: 3333,
+  contractAddress: '0xd2291d9ef533917333b71d909534288fe7cb1ec1' as const,
+  glyphPackAddress: '0x650Dc171B168f6DdedEeFe8a93651F9367738663' as const,
+  glyphCacheAddress: '0x0E3E08d00fC8bBd4D9B894000bf1D1BBcF8daBe7' as const,
+  rendererAddress: '0x47Cc3Ae4Eb45167A4F3A3E889Bae5D6fE51a038B' as const,
+  compositionPoolAddress: '0xe03d4A13229FE7149aa54aCF7A687550Bd9AE2dB' as const,
+  chainId: 1,
+  chainName: 'Ethereum',
 } as const;
 
-export function basescanTxUrl(hash: string): string {
-  return `${EXTERNAL_LINKS.basescan}/tx/${hash}`;
+export function explorerTxUrl(hash: string): string {
+  return `${EXTERNAL_LINKS.etherscan}/tx/${hash}`;
 }
 
-export function basescanAddressUrl(address: string): string {
-  return `${EXTERNAL_LINKS.basescan}/address/${address}`;
+export function explorerAddressUrl(address: string): string {
+  return `${EXTERNAL_LINKS.etherscan}/address/${address}`;
 }
+
+/** @deprecated Use explorerTxUrl */
+export const basescanTxUrl = explorerTxUrl;
+
+/** @deprecated Use explorerAddressUrl */
+export const basescanAddressUrl = explorerAddressUrl;

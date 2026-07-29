@@ -46,6 +46,23 @@ async function waitForReceipt(hash: TxHash) {
   }
 }
 
+function isUserRejection(message: string): boolean {
+  const m = message.toLowerCase();
+  return (
+    m.includes('user rejected') ||
+    m.includes('user denied') ||
+    m.includes('rejected the request') ||
+    m.includes('request rejected') ||
+    m.includes('denied transaction signature')
+  );
+}
+
+export type RevealAllResult = {
+  revealedIds: string[];
+  lastHash: TxHash | null;
+  complete: boolean;
+};
+
 export function useKaomojiWrite() {
   const { writeContractAsync, isPending: isWriting, reset } = useWriteContract();
   const [confirming, setConfirming] = useState(false);
@@ -99,6 +116,102 @@ export function useKaomojiWrite() {
     [runTx, writeContractAsync],
   );
 
+  /**
+   * Reveal many tokens. Contract has no revealBatch — sequential `reveal` calls.
+   * If the user rejects mid-batch, earlier confirms stay revealed and we report
+   * partial success instead of a hard failure.
+   */
+  const revealAll = useCallback(
+    async (
+      tokenIds: string[],
+      options?: {
+        onRevealed?: (tokenId: string) => void;
+        onPartialStop?: () => void;
+      },
+    ): Promise<RevealAllResult> => {
+      if (tokenIds.length === 0) {
+        throw new Error('No unrevealed Kaomoji to reveal');
+      }
+
+      const revealedIds: string[] = [];
+      let lastHash: TxHash | null = null;
+      const total = tokenIds.length;
+
+      for (let i = 0; i < tokenIds.length; i += 1) {
+        const id = tokenIds[i];
+        const n = i + 1;
+        setStatus({
+          state: 'pending',
+          hash: null,
+          message:
+            total === 1
+              ? 'Confirm reveal in wallet…'
+              : `Confirm reveal ${n}/${total} (#${id}) in wallet…`,
+        });
+        try {
+          const txHash = await writeContractAsync({
+            address: KAOMOJI_NFT_ADDRESS,
+            abi: kaomojiNftAbiTyped,
+            functionName: 'reveal',
+            args: [BigInt(id), []],
+          });
+          lastHash = txHash;
+          activeHashRef.current = txHash;
+          setConfirming(true);
+          setStatus({
+            state: 'confirming',
+            hash: txHash,
+            message:
+              total === 1
+                ? 'Revealing on-chain…'
+                : `Revealing ${n}/${total} on-chain…`,
+          });
+          await waitForReceipt(txHash);
+          revealedIds.push(id);
+          options?.onRevealed?.(id);
+        } catch (err) {
+          const raw = err instanceof Error ? err.message : 'Transaction failed';
+          const reason = isUserRejection(raw)
+            ? 'Wallet rejected the transaction'
+            : formatContractError(raw);
+
+          setConfirming(false);
+
+          if (revealedIds.length > 0) {
+            const remaining = total - revealedIds.length;
+            options?.onPartialStop?.();
+            setStatus({
+              state: 'success',
+              hash: lastHash,
+              message: `Revealed ${revealedIds.length} of ${total}. Stopped at #${id}: ${reason}. ${remaining} left unrevealed.`,
+            });
+            return { revealedIds, lastHash, complete: false };
+          }
+
+          setStatus({
+            state: 'failed',
+            hash: activeHashRef.current,
+            message: reason,
+          });
+          throw err;
+        } finally {
+          setConfirming(false);
+        }
+      }
+
+      setStatus({
+        state: 'success',
+        hash: lastHash,
+        message:
+          tokenIds.length === 1
+            ? 'Reveal confirmed'
+            : `Revealed ${tokenIds.length} Kaomoji`,
+      });
+      return { revealedIds, lastHash, complete: true };
+    },
+    [writeContractAsync],
+  );
+
   const edit = useCallback(
     async (tokenId: string, clusters: Document, themeId: number, layoutAlign: number) => {
       setStatus({ state: 'pending', hash: null, message: 'Preparing edit…' });
@@ -146,6 +259,7 @@ export function useKaomojiWrite() {
 
   return {
     reveal,
+    revealAll,
     edit,
     sacrifice,
     status,
