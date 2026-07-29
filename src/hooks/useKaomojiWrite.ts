@@ -13,6 +13,7 @@ import {
 import { compositionToHex, uniqueGlyphIds } from '../lib/onchain/compositionCodec';
 import { readCachedGlyphIds } from '../lib/onchain/fetchOwnedTokens';
 import { formatContractError } from '../lib/onchain/txErrors';
+import { refreshOpenseaMetadata } from '../lib/opensea/refreshMetadata';
 import type { Document } from '../lib/glyphs/types';
 import type { TxHash, TxStatus } from '../types/web3';
 
@@ -104,7 +105,7 @@ export function useKaomojiWrite() {
   const reveal = useCallback(
     async (tokenId: string) => {
       setStatus({ state: 'pending', hash: null, message: 'Confirm reveal in wallet…' });
-      return runTx('Revealing on-chain…', () =>
+      const hash = await runTx('Revealing on-chain…', () =>
         writeContractAsync({
           address: KAOMOJI_NFT_ADDRESS,
           abi: kaomojiNftAbiTyped,
@@ -112,6 +113,8 @@ export function useKaomojiWrite() {
           args: [BigInt(tokenId), []],
         }),
       );
+      refreshOpenseaMetadata([tokenId]);
+      return hash;
     },
     [runTx, writeContractAsync],
   );
@@ -168,6 +171,7 @@ export function useKaomojiWrite() {
           });
           await waitForReceipt(txHash);
           revealedIds.push(id);
+          refreshOpenseaMetadata([id]);
           options?.onRevealed?.(id);
         } catch (err) {
           const raw = err instanceof Error ? err.message : 'Transaction failed';
@@ -217,7 +221,7 @@ export function useKaomojiWrite() {
       setStatus({ state: 'pending', hash: null, message: 'Preparing edit…' });
       const { composition, glyphsToCache } = await prepareGlyphs(clusters, themeId, layoutAlign);
       setStatus({ state: 'pending', hash: null, message: 'Confirm in wallet…' });
-      return runTx('Applying edit…', () =>
+      const hash = await runTx('Applying edit…', () =>
         writeContractAsync({
           address: KAOMOJI_NFT_ADDRESS,
           abi: kaomojiNftAbiTyped,
@@ -225,6 +229,8 @@ export function useKaomojiWrite() {
           args: [BigInt(tokenId), composition, mapGlyphsToCache(glyphsToCache)],
         }),
       );
+      refreshOpenseaMetadata([tokenId]);
+      return hash;
     },
     [runTx, writeContractAsync],
   );
@@ -236,7 +242,7 @@ export function useKaomojiWrite() {
       }
       setStatus({ state: 'pending', hash: null, message: 'Confirm sacrifice…' });
       const count = burnTokenIds.length;
-      return runTx(
+      const hash = await runTx(
         count === 1 ? 'Sacrificing NFT…' : `Sacrificing ${count} NFTs…`,
         () =>
           writeContractAsync({
@@ -246,6 +252,9 @@ export function useKaomojiWrite() {
             args: [burnTokenIds.map((id) => BigInt(id)), BigInt(targetTokenId)],
           }),
       );
+      // Target traits (ink/level) change; burned ids disappear from the market.
+      refreshOpenseaMetadata([targetTokenId, ...burnTokenIds]);
+      return hash;
     },
     [runTx, writeContractAsync],
   );

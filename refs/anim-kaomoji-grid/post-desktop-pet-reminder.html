@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280">
+  <title>Kaomoji Pet — Dock Pin 1280×800</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@800;900&family=Noto+Sans:wght@600;700;800&family=Noto+Sans+JP:wght@700;900&family=Noto+Sans+Symbols+2&display=block" rel="stylesheet">
+  <style>
+    :root {
+      --fg:         oklch(18% 0.02 260);
+      --surface:    oklch(100% 0 0);
+      --pop-red:    oklch(58% 0.26 25);
+      --pop-yellow: oklch(88% 0.18 95);
+      --pop-cyan:   oklch(78% 0.14 210);
+      --font-display: 'M PLUS Rounded 1c', 'Noto Sans', sans-serif;
+      --font-body: 'Noto Sans', system-ui, sans-serif;
+      --font-kao: 'Noto Sans JP', 'Noto Sans Symbols 2', 'Segoe UI Symbol', sans-serif;
+      --font-mono: 'DotGothic16', ui-monospace, monospace;
+      /* top edge of Dock in this wallpaper @ 1280×800 */
+      --dock-top: 96px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1280px; height: 800px; overflow: hidden; }
+
+    .post {
+      position: relative;
+      width: 1280px;
+      height: 800px;
+      overflow: hidden;
+      color: var(--fg);
+      font-family: var(--font-body);
+      background: #3a2a40 center / cover no-repeat
+        url("./assets/image.png");
+    }
+
+    /* pinned to Dock — clipped so kao peeks over it like Bongo Cat */
+    .dock-pin {
+      position: absolute;
+      right: 72px;
+      bottom: 0;
+      z-index: 3;
+      width: 420px;
+      height: calc(100% - 40px);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+      /* cut everything below the dock shelf → looks “behind” Dock */
+      clip-path: inset(0 0 var(--dock-top) 0);
+      pointer-events: none;
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 10px;
+      padding-right: 8px;
+    }
+
+    .bubble {
+      position: relative;
+      border: 3px solid var(--fg);
+      box-shadow: 5px 5px 0 var(--fg);
+      padding: 12px 16px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: var(--fg);
+      border-radius: 0;
+    }
+
+    .bubble--user {
+      align-self: stretch;
+      margin-right: 48px;
+      background: var(--surface);
+      font-size: 15px;
+      z-index: 1;
+    }
+
+    .bubble--user .who {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: oklch(42% 0.03 260);
+      text-transform: uppercase;
+    }
+
+    .bubble--kao {
+      background: var(--pop-yellow);
+      font-size: 16px;
+      max-width: 82%;
+      z-index: 2;
+    }
+
+    .bubble--kao .who {
+      display: block;
+      margin-bottom: 3px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--pop-red);
+    }
+
+    .bubble p { text-wrap: pretty; }
+
+    .bubble--user::after,
+    .bubble--kao::after {
+      content: "";
+      position: absolute;
+      right: 34px;
+      bottom: -11px;
+      width: 16px;
+      height: 16px;
+      border-right: 3px solid var(--fg);
+      border-bottom: 3px solid var(--fg);
+      transform: rotate(45deg);
+    }
+
+    .bubble--user::after { background: var(--surface); }
+    .bubble--kao::after { background: var(--pop-yellow); right: 28px; }
+
+    .highlight {
+      background: var(--pop-cyan);
+      border: 2px solid var(--fg);
+      padding: 0 5px;
+    }
+
+    .pet-row {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      gap: 10px;
+      /* sit deeper into the dock so clip eats the bottom half */
+      margin-bottom: calc(var(--dock-top) - 28px);
+      padding-right: 6px;
+    }
+
+    .mic {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 52px;
+      border-radius: 50%;
+      background: var(--pop-red);
+      border: 3px solid var(--fg);
+      box-shadow: 4px 4px 0 var(--fg);
+      display: grid;
+      place-items: center;
+      color: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .mic svg { width: 20px; height: 20px; display: block; }
+
+    .mic-dot {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--pop-yellow);
+      border: 2px solid var(--fg);
+      box-shadow: 2px 2px 0 var(--fg);
+    }
+
+    .pet {
+      position: relative;
+      background: var(--surface);
+      border: 3px solid var(--fg);
+      box-shadow: 5px 5px 0 var(--fg);
+      padding: 18px 28px 52px;
+      text-align: center;
+    }
+
+    .pet-kao {
+      font-family: var(--font-kao);
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1;
+      font-kerning: none;
+      font-variant-ligatures: none;
+      font-feature-settings: "kern" 0, "liga" 0, "palt" 0;
+      letter-spacing: 0;
+      white-space: nowrap;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+      font-synthesis: none;
+      color: var(--fg);
+      user-select: none;
+    }
+
+    /* tiny dock “app” mark like BC on the taskbar */
+    .dock-icon {
+      position: absolute;
+      right: 118px;
+      bottom: 22px;
+      z-index: 4;
+      width: 48px;
+      height: 48px;
+      border-radius: 11px;
+      background: linear-gradient(160deg, var(--pop-yellow), #ffb703);
+      border: 2px solid var(--fg);
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-kao);
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--fg);
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <article class="post" aria-label="Kaomoji Pet pinned to Dock">
+    <div class="dock-pin">
+      <div class="chat">
+        <div class="bubble bubble--user">
+          <div class="who">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2Z"/>
+            </svg>
+            Voice note
+          </div>
+          <p>Remind me that the <span class="highlight">Kaomoji NFT</span> mint is today.</p>
+        </div>
+
+        <div class="bubble bubble--kao">
+          <span class="who">Kaomoji Pet</span>
+          <p>Yes sir — I’ll definitely remind you ✧</p>
+        </div>
+      </div>
+
+      <div class="pet-row">
+        <div class="mic" aria-label="Microphone">
+          <span class="mic-dot" aria-hidden="true"></span>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2Z"/>
+          </svg>
+        </div>
+
+        <div class="pet">
+          <div class="pet-kao">(๑•̀ㅂ•́)و✧</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dock-icon" title="Kaomoji Pet" aria-hidden="true">カ</div>
+  </article>
+</body>
+</html>

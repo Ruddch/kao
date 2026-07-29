@@ -1,0 +1,345 @@
+.page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.pageHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  flex-shrink: 0;
+  padding: var(--gap-sm) var(--gap-md) var(--gap-md);
+  text-align: center;
+  pointer-events: none;
+}
+
+.pageHeader button,
+.pageHeader a {
+  pointer-events: auto;
+}
+
+.pageTitle {
+  margin: 0 0 var(--gap-xs);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.pageSubtitle {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  max-width: 360px;
+  margin-inline: auto;
+  line-height: 1.5;
+}
+
+.devBadge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: var(--pop-cyan);
+  border: 1px solid var(--fg);
+}
+
+.devResetBtn {
+  display: block;
+  margin: var(--gap-xs) auto 0;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed color-mix(in oklch, var(--fg) 35%, transparent);
+  cursor: pointer;
+}
+
+.devResetBtn:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
+.devTag {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 4px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+  color: var(--fg);
+  background: var(--pop-cyan);
+  border: 1px solid var(--fg);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: color-mix(in oklch, var(--fg) 48%, transparent);
+  pointer-events: none;
+}
+
+.cardWrap {
+  position: relative;
+  z-index: 10;
+  width: min(calc(100% - 2 * var(--gap-md)), 340px);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.card {
+  width: 100%;
+  padding: var(--gap-md);
+  background: var(--surface);
+  border: var(--border-thick);
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  margin-bottom: var(--gap-sm);
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.tokenId {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.cardFooter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.previewFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  border: 2px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.previewImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.previewPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.foilLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.cardHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.revealBtn {
+  width: 100%;
+}
+
+.status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+  margin: 0;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.statusStatic {
+  animation: none;
+}
+
+.link {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fg);
+  text-align: center;
+}
+
+.stats {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+  margin: 0;
+  opacity: 0.85;
+}
+
+.errorMessage {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+  margin: 0;
+  color: var(--pop-red);
+}
+
+.scratchCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scratchCanvasHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scratchCanvasDisabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.scratchCanvasDone {
+  pointer-events: none;
+}
+
+.scratchLocked {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    #b8b8b8,
+    #b8b8b8 6px,
+    #c8c8c8 6px,
+    #c8c8c8 12px
+  );
+  opacity: 0.85;
+}
+
+.scratchToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-xs);
+}
+
+.scratchHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+.revealAllBtn {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--surface);
+  border: 2px solid var(--fg);
+  box-shadow: var(--shadow-hard-sm);
+  cursor: pointer;
+  transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+}
+
+.revealAllBtn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-hard-md);
+}
+
+.scratchProgress {
+  height: 4px;
+  background: color-mix(in oklch, var(--fg) 12%, transparent);
+  border: 1px solid var(--fg);
+}
+
+.scratchProgressBar {
+  height: 100%;
+  background: var(--pop-cyan);
+  transition: width 0.1s linear;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status {
+    animation: none;
+  }
+
+  .scratchProgressBar,
+  .scratchCanvas {
+    transition: none;
+  }
+
+  .cardWrap {
+    will-change: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .cardWrap {
+    width: 100%;
+  }
+}
